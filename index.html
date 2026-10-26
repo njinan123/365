@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>365 × 3.65</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0f12; --panel:#161a20; --panel2:#1d222a; --line:#2a313b;
+  --text:#f2f4f7; --muted:#8b95a3; --accent:#c6ff3d; --accent-ink:#0d0f12;
+  --warm:#ff7a45; --radius:18px;
+}
+@media (prefers-color-scheme: light){
+  :root{ --bg:#f4f5f0; --panel:#ffffff; --panel2:#f0f2ea; --line:#dfe3d6;
+    --text:#14171c; --muted:#5f6875; --accent:#5a8a00; --accent-ink:#ffffff; --warm:#e0551c; }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:24px 16px 64px}
+h1,h2,.big{font-family:"Archivo Black",Inter,sans-serif;letter-spacing:-.02em}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+
+/* header */
+.hero{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}
+.hero h1{font-size:clamp(40px,9vw,76px);line-height:.9}
+.hero h1 span{color:var(--accent)}
+.hero p{color:var(--muted);margin-top:8px;max-width:420px}
+.today{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;text-align:right}
+.today b{display:block;font-size:20px}
+.today small{color:var(--muted)}
+
+.banner{background:color-mix(in srgb,var(--warm) 14%,transparent);border:1px solid color-mix(in srgb,var(--warm) 40%,transparent);
+  color:var(--text);border-radius:12px;padding:10px 14px;margin-bottom:18px;font-size:13px}
+.banner b{color:var(--warm)}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.stat .big{font-size:28px;line-height:1.1}
+.stat small{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.journey{grid-column:span 4}
+.bar{height:10px;background:var(--panel2);border-radius:99px;overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--warm));border-radius:99px;transition:width .6s}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}.journey{grid-column:span 2}}
+
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin:28px 0 12px}
+.sec-head h2{font-size:22px}
+
+/* runner cards */
+.runners{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;position:relative}
+.card-top{display:flex;gap:14px;align-items:center}
+.ring{width:84px;height:84px;flex:none;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:grid;place-items:center;text-align:center;line-height:1}
+.ring .num b{font-family:"Archivo Black";font-size:22px;display:block}
+.ring .num small{font-size:10px;color:var(--muted)}
+.who h3{font-size:18px;display:flex;align-items:center;gap:8px}
+.who .dot{width:10px;height:10px;border-radius:50%}
+.who .meta{color:var(--muted);font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chip{background:var(--panel2);border-radius:99px;padding:2px 9px;font-size:12px;font-weight:600}
+.chip.fire{color:var(--warm)}
+.grid{display:grid;grid-template-rows:repeat(7,1fr);grid-auto-flow:column;grid-auto-columns:1fr;gap:2px;margin:14px 0}
+.grid i{aspect-ratio:1;border-radius:2px;background:var(--panel2)}
+.grid i.done{background:var(--c)}
+.grid i.miss{background:color-mix(in srgb,var(--warm) 22%,var(--panel2))}
+.grid i.now{outline:1.5px solid var(--text);outline-offset:-1px}
+.grid i.future{opacity:.45}
+.actions{display:flex;gap:8px}
+.btn{flex:1;background:var(--accent);color:var(--accent-ink);font-weight:800;border-radius:12px;padding:11px 12px;transition:transform .1s}
+.btn:active{transform:scale(.97)}
+.btn.doneToday{background:var(--panel2);color:var(--text)}
+.btn.ghost{flex:none;background:var(--panel2);color:var(--text);font-weight:600}
+.x{position:absolute;top:10px;right:12px;color:var(--muted);font-size:18px;opacity:.5}
+.x:hover{opacity:1}
+
+/* two-col */
+.cols{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.lb li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);list-style:none}
+.lb li:last-child{border:0}
+.lb .rank{font-family:"Archivo Black";width:26px;color:var(--muted)}
+.lb .nm{flex:1;font-weight:700}
+.lb .v{font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px}
+.feed li{list-style:none;padding:6px 0;font-size:14px;color:var(--muted)}
+.feed li b{color:var(--text)}
+.empty{color:var(--muted);font-size:14px;padding:8px 0}
+.spotify iframe{width:100%;height:352px;border:0;border-radius:12px;display:block}
+
+/* add form + dialog */
+.add{display:flex;gap:8px;flex-wrap:wrap}
+.add input,dialog input{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+.add input[type=text]{flex:1}
+dialog{margin:auto;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:var(--radius);padding:20px;width:min(360px,92vw)}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+dialog h3{margin-bottom:12px}
+dialog label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+dialog input{width:100%}
+dialog .actions{margin-top:16px}
+.quote{text-align:center;color:var(--muted);font-style:italic;margin-top:36px;font-size:14px}
+canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+
+  <header class="hero">
+    <div>
+      <h1>365 <span>×</span> 3.65</h1>
+      <p>3.65 miles a day, every day, for a year. Tap your card when today's run is done.</p>
+    </div>
+    <div class="today"><small id="todayLabel"></small><b id="todayDay"></b></div>
+  </header>
+
+  <div id="banner"></div>
+
+  <section class="stats">
+    <div class="stat"><small>Crew miles</small><div class="big" id="sMiles">0</div></div>
+    <div class="stat"><small>Runs logged</small><div class="big" id="sRuns">0</div></div>
+    <div class="stat"><small>Ran today</small><div class="big" id="sToday">0/0</div></div>
+    <div class="stat"><small>Best streak now</small><div class="big" id="sStreak">0</div></div>
+    <div class="stat journey">
+      <small>Crew journey</small>
+      <div id="jText" style="font-weight:700;margin-top:4px"></div>
+      <div class="bar"><i id="jBar" style="width:0"></i></div>
+    </div>
+  </section>
+
+  <div class="sec-head"><h2>The crew</h2></div>
+  <div class="runners" id="runners"></div>
+
+  <div class="sec-head"><h2>Add a runner</h2></div>
+  <form class="add panel" id="addForm">
+    <input type="text" id="addName" placeholder="Name" maxlength="24" required>
+    <input type="date" id="addStart" title="Their day 1">
+    <button class="btn" style="flex:none">Add</button>
+  </form>
+
+  <div class="cols" style="margin-top:28px">
+    <div class="panel">
+      <h2 style="font-size:20px;margin-bottom:8px">Leaderboard</h2>
+      <ol class="lb" id="lb"></ol>
+      <h2 style="font-size:20px;margin:18px 0 4px">Latest runs</h2>
+      <ul class="feed" id="feed"></ul>
+    </div>
+    <div class="panel spotify">
+      <h2 style="font-size:20px;margin-bottom:10px">The playlist</h2>
+      <div id="spotify"></div>
+    </div>
+  </div>
+
+  <p class="quote" id="quote"></p>
+</div>
+
+<dialog id="logDlg">
+  <form method="dialog" id="logForm">
+    <h3 id="logTitle">Log a run</h3>
+    <label for="logDate">Date</label>
+    <input type="date" id="logDate" required>
+    <label for="logMiles">Miles</label>
+    <input type="number" id="logMiles" step="0.01" min="0.01" required>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="logDelete">Remove</button>
+      <button type="button" class="btn ghost" id="logCancel">Cancel</button>
+      <button class="btn">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+/* ===================== EDIT THESE ===================== */
+const CONFIG = {
+  dailyMiles: 3.65,
+  totalDays: 365,
+  // Paste your Spotify playlist link (Share → Copy link to playlist)
+  spotifyPlaylist: "",
+  // Paste your Firebase config here to make the tracker shared & live.
+  // Leave as null to try the site out (saves only on your own device).
+  firebase: {
+    apiKey: "AIzaSyBGybUml2sRIKgVsXO1wXAyqodSlHtq030",
+    authDomain: "for-365-d75f3.firebaseapp.com",
+    databaseURL: "https://for-365-d75f3-default-rtdb.firebaseio.com",
+    projectId: "for-365-d75f3",
+    storageBucket: "for-365-d75f3.firebasestorage.app",
+    messagingSenderId: "1021222685332",
+    appId: "1:1021222685332:web:6344e6e72bca1997578281"
+  }
+  /* example:
+  firebase: {
+    apiKey: "...",
+    authDomain: "your-project.firebaseapp.com",
+    databaseURL: "https://your-project-default-rtdb.firebaseio.com",
+    projectId: "your-project",
+  }
+  */
+};
+/* ====================================================== */
+
+const COLORS = ["#c6ff3d","#ff7a45","#4dd0ff","#ff5fa2","#ffd23f","#9b7bff","#3dffb1","#ff4d4d"];
+const JOURNEY = [
+  [26.2,"a marathon"],[95,"NYC → Philly"],[215,"NYC → Boston"],[365,"NYC → Washington, D.C. and back"],
+  [790,"NYC → Chicago"],[1280,"NYC → Miami"],[2790,"NYC → Los Angeles"],[3460,"across the Atlantic to London"],
+  [5000,"5,000 miles"],[7500,"7,500 miles"],[10000,"10,000 miles"],[24901,"around the Earth"]
+];
+const QUOTES = [
+  "The miracle isn't that I finished. It's that I had the courage to start. — John Bingham",
+  "Run the mile you're in.",
+  "Some days the run is easy. Show up for the other ones too.",
+  "3.65 today. 3.65 tomorrow. That's the whole plan.",
+  "Slow miles are still miles.",
+  "You never regret the run. You regret skipping it."
+];
+
+/* ---------- dates ---------- */
+const pad = n => String(n).padStart(2,"0");
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse = s => { const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); };
+const addDays = (s,n) => { const d=parse(s); d.setDate(d.getDate()+n); return ymd(d); };
+const diff = (a,b) => Math.round((parse(b)-parse(a))/864e5);
+const today = () => ymd(new Date());
+const nice = s => parse(s).toLocaleDateString(undefined,{month:"short",day:"numeric"});
+const milesOf = v => typeof v === "number" ? v : (v && v.m) || 0;
+
+/* ---------- storage (Firebase live, or this-device demo) ---------- */
+const Store = (() => {
+  let data = { runners:{}, logs:{} }, subs = [];
+  const emit = () => subs.forEach(f => f(data));
+  const norm = v => ({ runners:(v&&v.runners)||{}, logs:(v&&v.logs)||{} });
+
+  if (CONFIG.firebase && window.firebase) {
+    firebase.initializeApp(CONFIG.firebase);
+    const db = firebase.database();
+    db.ref("/").on("value", s => { data = norm(s.val()); emit(); });
+    return {
+      live:true,
+      subscribe(f){ subs.push(f); f(data); },
+      addRunner(r){ return db.ref("runners").push().set(r); },
+      removeRunner(id){ return db.ref().update({["runners/"+id]:null,["logs/"+id]:null}); },
+      setLog(id,date,m){ return db.ref(`logs/${id}/${date}`).set({m, t:Date.now()}); },
+      removeLog(id,date){ return db.ref(`logs/${id}/${date}`).remove(); }
+    };
+  }
+  const KEY = "run365";
+  try { data = norm(JSON.parse(localStorage.getItem(KEY))); } catch(e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e) {} emit(); };
+  return {
+    live:false,
+    subscribe(f){ subs.push(f); f(data); },
+    addRunner(r){ data.runners["r"+Date.now()] = r; save(); },
+    removeRunner(id){ delete data.runners[id]; delete data.logs[id]; save(); },
+    setLog(id,date,m){ (data.logs[id] ||= {})[date] = {m, t:Date.now()}; save(); },
+    removeLog(id,date){ if (data.logs[id]) delete data.logs[id][date]; save(); }
+  };
+})();
+
+/* ---------- stats per runner ---------- */
+function statsFor(id, r, logs) {
+  const L = logs[id] || {}, t = today();
+  const full = d => milesOf(L[d]) >= CONFIG.dailyMiles - 1e-9;
+  const done = Object.keys(L).filter(full).length;
+  const miles = Object.values(L).reduce((a,v) => a + milesOf(v), 0);
+  const dayN = Math.min(CONFIG.totalDays, Math.max(0, diff(r.start, t) + 1));
+  let streak = 0, d = full(t) ? t : addDays(t,-1);
+  while (full(d)) { streak++; d = addDays(d,-1); }
+  return { L, done, miles, dayN, streak, ranToday: full(t), missed: Math.max(0, dayN - done - (full(t)?0:1)) };
+}
+
+/* ---------- render ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function ring(pct, color) {
+  const r = 36, c = 2*Math.PI*r;
+  return `<svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="${r}" fill="none" stroke="var(--panel2)" stroke-width="8"/>
+    <circle cx="42" cy="42" r="${r}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round"
+    stroke-dasharray="${c}" stroke-dashoffset="${c*(1-pct)}" style="transition:stroke-dashoffset .8s"/></svg>`;
+}
+
+function yearGrid(r, s) {
+  const t = today(); let out = "";
+  for (let i = 0; i < CONFIG.totalDays; i++) {
+    const d = addDays(r.start, i);
+    const m = milesOf(s.L[d]);
+    let cls = d > t ? "future" : m >= CONFIG.dailyMiles - 1e-9 ? "done" : d < t ? "miss" : "";
+    if (d === t) cls += " now";
+    out += `<i class="${cls}" title="${nice(d)}${m ? ` · ${m} mi` : ""}"></i>`;
+  }
+  return out;
+}
+
+let lastData = null;
+function render(data) {
+  lastData = data;
+  const t = today();
+  $("todayLabel").textContent = parse(t).toLocaleDateString(undefined,{weekday:"long"});
+  $("todayDay").textContent = parse(t).toLocaleDateString(undefined,{month:"long",day:"numeric",year:"numeric"});
+  $("banner").innerHTML = Store.live ? "" :
+    `<div class="banner"><b>Practice mode:</b> check-ins only save on this device. Add your Firebase config to make it shared and live for the whole crew.</div>`;
+
+  const ids = Object.keys(data.runners).sort((a,b) => (data.runners[a].joined||0) - (data.runners[b].joined||0));
+  const all = ids.map(id => ({ id, r:data.runners[id], s:statsFor(id, data.runners[id], data.logs) }));
+
+  // crew stats
+  const miles = all.reduce((a,x) => a + x.s.miles, 0);
+  $("sMiles").textContent = miles.toFixed(1);
+  $("sRuns").textContent = all.reduce((a,x) => a + Object.keys(x.s.L).length, 0);
+  $("sToday").textContent = `${all.filter(x => x.s.ranToday).length}/${all.length}`;
+  $("sStreak").textContent = all.length ? Math.max(...all.map(x => x.s.streak)) + "🔥" : "0";
+  const next = JOURNEY.find(([d]) => d > miles) || JOURNEY[JOURNEY.length-1];
+  const prevD = (JOURNEY[JOURNEY.indexOf(next)-1] || [0])[0];
+  const reached = JOURNEY.filter(([d]) => d <= miles).pop();
+  $("jText").textContent = (reached ? `Together you've run ${reached[1]}. ` : "") +
+    `Next: ${next[1]} — ${Math.max(0, next[0]-miles).toFixed(1)} mi to go`;
+  $("jBar").style.width = Math.min(100, (miles-prevD)/(next[0]-prevD)*100) + "%";
+
+  // runner cards
+  $("runners").innerHTML = all.length ? all.map(({id,r,s}) => `
+    <article class="card" style="--c:${r.color}">
+      <button class="x" data-remove="${id}" title="Remove runner" aria-label="Remove ${esc(r.name)}">×</button>
+      <div class="card-top">
+        <div class="ring">${ring(s.done/CONFIG.totalDays, r.color)}
+          <div class="num"><div><b>${s.done}</b><small>/ ${CONFIG.totalDays}</small></div></div></div>
+        <div class="who">
+          <h3><span class="dot" style="background:${r.color}"></span>${esc(r.name)}</h3>
+          <div class="meta">${s.dayN ? `Day ${s.dayN} of ${CONFIG.totalDays}` : `Starts ${nice(r.start)}`} · ${s.miles.toFixed(1)} mi</div>
+          <div class="chips">
+            <span class="chip fire">${s.streak} day streak 🔥</span>
+            ${s.missed ? `<span class="chip">${s.missed} to make up</span>` : s.dayN ? `<span class="chip">On pace ✓</span>` : ""}
+          </div>
+        </div>
+      </div>
+      <div class="grid">${yearGrid(r,s)}</div>
+      <div class="actions">
+        <button class="btn ${s.ranToday ? "doneToday" : ""}" data-today="${id}">
+          ${s.ranToday ? "✓ Done today" : `Log today's ${CONFIG.dailyMiles}`}</button>
+        <button class="btn ghost" data-edit="${id}">Other day</button>
+      </div>
+    </article>`).join("")
+    : `<p class="empty">No runners yet. Add yourself below 👇</p>`;
+
+  // leaderboard
+  const ranked = [...all].sort((a,b) => b.s.done - a.s.done || b.s.miles - a.s.miles);
+  $("lb").innerHTML = ranked.length ? ranked.map((x,i) => `
+    <li><span class="rank">${["🥇","🥈","🥉"][i] || i+1}</span>
+      <span class="nm">${esc(x.r.name)}</span>
+      <span class="v">${x.s.done} days · ${x.s.miles.toFixed(1)} mi · ${x.s.streak}🔥</span></li>`).join("")
+    : `<li class="empty">Nobody yet.</li>`;
+
+  // feed
+  const feed = [];
+  all.forEach(({id,r,s}) => Object.entries(s.L).forEach(([d,v]) => feed.push({ name:r.name, d, m:milesOf(v), t:(v&&v.t)||0 })));
+  feed.sort((a,b) => b.t - a.t || (a.d < b.d ? 1 : -1));
+  $("feed").innerHTML = feed.length ? feed.slice(0,8).map(f =>
+    `<li><b>${esc(f.name)}</b> ran ${f.m} mi${f.d === t ? " today" : ` on ${nice(f.d)}`}</li>`).join("")
+    : `<li>No runs yet — be the first.</li>`;
+}
+
+/* ---------- spotify ---------- */
+(function () {
+  const m = (CONFIG.spotifyPlaylist || "").match(/playlist[/:]([A-Za-z0-9]+)/);
+  $("spotify").innerHTML = m
+    ? `<iframe src="https://open.spotify.com/embed/playlist/${m[1]}?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`
+    : `<p class="empty">Paste your playlist link into <code>spotifyPlaylist</code> at the top of the code and it'll show up here.</p>`;
+})();
+$("quote").textContent = QUOTES[Math.floor(new Date().getDate()) % QUOTES.length];
+
+/* ---------- confetti ---------- */
+function confetti(color) {
+  const cv = $("confetti"), ctx = cv.getContext("2d");
+  cv.width = innerWidth; cv.height = innerHeight;
+  const P = Array.from({length:140}, () => ({
+    x: innerWidth/2, y: innerHeight*0.6, vx:(Math.random()-.5)*14, vy:-Math.random()*16-6,
+    r: Math.random()*6+3, c:[color,"#ff7a45","#4dd0ff","#ffd23f"][Math.floor(Math.random()*4)], a:Math.random()*6 }));
+  let f = 0;
+  (function tick() {
+    ctx.clearRect(0,0,cv.width,cv.height);
+    P.forEach(p => { p.vy += .45; p.x += p.vx; p.y += p.vy; p.a += .2;
+      ctx.fillStyle = p.c; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6); ctx.restore(); });
+    if (++f < 110) requestAnimationFrame(tick); else ctx.clearRect(0,0,cv.width,cv.height);
+  })();
+}
+
+/* ---------- interactions ---------- */
+let editing = null;
+document.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const d = lastData;
+  if (b.dataset.today) {
+    const id = b.dataset.today, r = d.runners[id], s = statsFor(id, r, d.logs);
+    if (s.ranToday) { if (confirm(`Undo ${r.name}'s run for today?`)) Store.removeLog(id, today()); return; }
+    Store.setLog(id, today(), CONFIG.dailyMiles);
+    confetti(r.color);
+  }
+  if (b.dataset.edit) {
+    editing = b.dataset.edit; const r = d.runners[editing];
+    $("logTitle").textContent = `Log a run for ${r.name}`;
+    $("logDate").value = addDays(today(), -1);
+    $("logDate").max = today();
+    $("logMiles").value = CONFIG.dailyMiles;
+    $("logDlg").showModal();
+  }
+  if (b.dataset.remove) {
+    const r = d.runners[b.dataset.remove];
+    if (confirm(`Remove ${r.name} and all their runs? This can't be undone.`)) Store.removeRunner(b.dataset.remove);
+  }
+});
+$("logDate").addEventListener("change", () => {
+  const v = editing && lastData.logs[editing] && lastData.logs[editing][$("logDate").value];
+  $("logMiles").value = v ? milesOf(v) : CONFIG.dailyMiles;
+});
+$("logForm").addEventListener("submit", () => {
+  const m = parseFloat($("logMiles").value);
+  if (editing && m > 0) { Store.setLog(editing, $("logDate").value, Math.round(m*100)/100); if (m >= CONFIG.dailyMiles) confetti(lastData.runners[editing].color); }
+});
+$("logCancel").onclick = () => $("logDlg").close();
+$("logDelete").onclick = () => { if (editing) Store.removeLog(editing, $("logDate").value); $("logDlg").close(); };
+
+$("addStart").value = today();
+$("addForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = $("addName").value.trim(); if (!name) return;
+  const n = Object.keys(lastData.runners).length;
+  Store.addRunner({ name, start: $("addStart").value || today(), color: COLORS[n % COLORS.length], joined: Date.now() });
+  $("addName").value = "";
+});
+
+Store.subscribe(render);
+setInterval(() => lastData && render(lastData), 60000); // roll over at midnight
+</script>
+</body>
+</html>
