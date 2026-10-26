@@ -102,6 +102,30 @@ dialog h3{margin-bottom:12px}
 dialog label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
 dialog input{width:100%}
 dialog .actions{margin-top:16px}
+dialog.wide{width:min(460px,94vw)}
+.row2{display:flex;gap:10px}
+.row2>div{flex:1;min-width:0}
+.hist{max-height:50vh;overflow:auto;margin-top:6px;border-top:1px solid var(--line)}
+.hrow{display:flex;align-items:center;gap:10px;padding:7px 2px;border-bottom:1px solid var(--line)}
+.hrow .dn{font-weight:800;width:62px;flex:none}
+.hrow .dd{flex:1;color:var(--muted);font-size:13px}
+.hrow input{width:88px;text-align:right;padding:8px 10px}
+.hrow.full .dn{color:var(--accent)}
+.histbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;font-size:13px;color:var(--muted)}
+.linkbtn{color:var(--accent);font-weight:800;font-size:13px;white-space:nowrap}
+.grid i[data-d]:not(.future){cursor:pointer}
+.hint{color:var(--muted);font-size:13px;margin:-4px 0 10px}
+.acct{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-6px 0 18px;color:var(--muted);font-size:14px}
+.acct:empty{display:none}
+.acct b{color:var(--text)}
+.acct .btn{flex:none;padding:8px 18px}
+.add input{min-width:140px}
+.err{color:var(--warm);font-size:13px;margin-top:8px;min-height:1px}
+.err:empty{display:none}
+.card.mine{border-color:var(--c);box-shadow:0 0 0 1px var(--c)}
+.you{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:var(--c);color:#0d0f12;border-radius:6px;padding:1px 6px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
 .quote{text-align:center;color:var(--muted);font-style:italic;margin-top:36px;font-size:14px}
 canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 </style>
@@ -118,6 +142,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
     <div class="today"><small id="todayLabel"></small><b id="todayDay"></b></div>
   </header>
 
+  <div class="acct" id="acct"></div>
   <div id="banner"></div>
 
   <section class="stats">
@@ -135,12 +160,17 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
   <div class="sec-head"><h2>The crew</h2></div>
   <div class="runners" id="runners"></div>
 
-  <div class="sec-head"><h2>Add a runner</h2></div>
-  <form class="add panel" id="addForm">
-    <input type="text" id="addName" placeholder="Name" maxlength="24" required>
-    <input type="date" id="addStart" title="Their day 1">
-    <button class="btn" style="flex:none">Add</button>
-  </form>
+  <section id="joinSec">
+    <div class="sec-head"><h2>Join the challenge</h2></div>
+    <p class="hint" id="joinHint">Pick a name, a password and the date of your Day 1. Use the same name and password to sign in on any device. Then tap "Past runs" on your card to fill in what you've already run.</p>
+    <form class="add panel" id="addForm">
+      <input type="text" id="addName" placeholder="Name" maxlength="24" required autocomplete="username">
+      <input type="password" id="addPw" placeholder="Password (6+ characters)" minlength="6" autocomplete="new-password">
+      <input type="date" id="addStart" title="Your Day 1" aria-label="Your Day 1">
+      <button class="btn" style="flex:none">Join</button>
+      <p class="err" id="addErr" style="flex-basis:100%"></p>
+    </form>
+  </section>
 
   <div class="cols" style="margin-top:28px">
     <div class="panel">
@@ -173,8 +203,44 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
   </form>
 </dialog>
 
+<dialog id="histDlg" class="wide">
+  <form method="dialog" id="histForm">
+    <h3 id="histTitle">Past runs</h3>
+    <div class="row2">
+      <div><label for="histStart">Day 1 was</label><input type="date" id="histStart" required></div>
+      <div><label for="histDayN">So today is day</label><input type="number" id="histDayN" min="1" inputmode="numeric"></div>
+    </div>
+    <div class="histbar">
+      <span>Miles per day · blank = missed</span>
+      <button type="button" class="linkbtn" id="histFill">Fill blanks with 3.65</button>
+    </div>
+    <div class="hist" id="histList"></div>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="histCancel">Cancel</button>
+      <button class="btn">Save all</button>
+    </div>
+  </form>
+</dialog>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<dialog id="authDlg">
+  <form id="authForm">
+    <h3>Sign in</h3>
+    <label for="authName">Name</label>
+    <input type="text" id="authName" required autocomplete="username">
+    <label for="authPw">Password</label>
+    <input type="password" id="authPw" required autocomplete="current-password">
+    <p class="err" id="authErr"></p>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="authCancel">Cancel</button>
+      <button class="btn" id="authGo">Sign in</button>
+    </div>
+  </form>
+</dialog>
+<div class="toast" id="toast" role="status"></div>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script>
 /* ===================== EDIT THESE ===================== */
 const CONFIG = {
@@ -237,27 +303,74 @@ const Store = (() => {
 
   if (CONFIG.firebase && window.firebase) {
     firebase.initializeApp(CONFIG.firebase);
-    const db = firebase.database();
-    db.ref("/").on("value", s => { data = norm(s.val()); emit(); });
-    return {
-      live:true,
-      subscribe(f){ subs.push(f); f(data); },
-      addRunner(r){ return db.ref("runners").push().set(r); },
-      removeRunner(id){ return db.ref().update({["runners/"+id]:null,["logs/"+id]:null}); },
-      setLog(id,date,m){ return db.ref(`logs/${id}/${date}`).set({m, t:Date.now()}); },
-      removeLog(id,date){ return db.ref(`logs/${id}/${date}`).remove(); }
+    const db = firebase.database(), auth = firebase.auth();
+    // A name becomes a private sign-in id; no email is ever sent.
+    const emailFor = name => {
+      const slug = name.trim().toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g,"")
+        .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+      if (!slug) throw { code:"bad-name" };
+      return slug + "@runners.for365.example.com";
     };
+    // Create (or take over) the card for this account. If a card with the same
+    // name already exists (made before passwords, or after a password reset),
+    // its start date, color and runs are copied over.
+    const claim = (uid, name, start) => {
+      const key = name.trim().toLowerCase();
+      const prev = Object.entries(data.runners)
+        .filter(([id,r]) => id !== uid && (r.name||"").trim().toLowerCase() === key)
+        .sort((a,b) => (b[1].joined||0) - (a[1].joined||0))[0];
+      const n = new Set(Object.values(data.runners).map(r => (r.name||"").trim().toLowerCase())).size;
+      const u = { [`runners/${uid}`]: {
+        name: name.trim(), uid, joined: Date.now(),
+        start: prev ? prev[1].start : start,
+        color: prev ? prev[1].color : COLORS[n % COLORS.length] } };
+      if (prev && data.logs[prev[0]]) u[`logs/${uid}`] = data.logs[prev[0]];
+      return db.ref().update(u);
+    };
+    const api = {
+      live:true, me:null, ready:false,
+      subscribe(f){ subs.push(f); f(data); },
+      async signUp(name, pw, start){
+        const c = await auth.createUserWithEmailAndPassword(emailFor(name), pw);
+        await claim(c.user.uid, name, start);
+      },
+      async signIn(name, pw){
+        const c = await auth.signInWithEmailAndPassword(emailFor(name), pw);
+        if (!data.runners[c.user.uid]) await claim(c.user.uid, name, today());
+      },
+      signOut(){ return auth.signOut(); },
+      async removeRunner(id){
+        await db.ref().update({["runners/"+id]:null,["logs/"+id]:null});
+        try { await auth.currentUser.delete(); } catch(e) { await auth.signOut(); }
+      },
+      setLog(id,date,m){ return db.ref(`logs/${id}/${date}`).set({m, t:Date.now()}); },
+      removeLog(id,date){ return db.ref(`logs/${id}/${date}`).remove(); },
+      saveHistory(id,start,patch){
+        const u = { [`runners/${id}/start`]: start };
+        for (const [d,v] of Object.entries(patch)) u[`logs/${id}/${d}`] = v;
+        return db.ref().update(u);
+      }
+    };
+    db.ref("/").on("value", s => { data = norm(s.val()); emit(); });
+    auth.onAuthStateChanged(u => { api.me = u ? u.uid : null; api.ready = true; emit(); });
+    return api;
   }
   const KEY = "run365";
   try { data = norm(JSON.parse(localStorage.getItem(KEY))); } catch(e) {}
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e) {} emit(); };
   return {
-    live:false,
+    live:false, me:null, ready:true,
     subscribe(f){ subs.push(f); f(data); },
     addRunner(r){ data.runners["r"+Date.now()] = r; save(); },
     removeRunner(id){ delete data.runners[id]; delete data.logs[id]; save(); },
     setLog(id,date,m){ (data.logs[id] ||= {})[date] = {m, t:Date.now()}; save(); },
-    removeLog(id,date){ if (data.logs[id]) delete data.logs[id][date]; save(); }
+    removeLog(id,date){ if (data.logs[id]) delete data.logs[id][date]; save(); },
+    saveHistory(id,start,patch){
+      data.runners[id].start = start;
+      const L = (data.logs[id] ||= {});
+      for (const [d,v] of Object.entries(patch)) { if (v) L[d] = v; else delete L[d]; }
+      save();
+    }
   };
 })();
 
@@ -265,12 +378,14 @@ const Store = (() => {
 function statsFor(id, r, logs) {
   const L = logs[id] || {}, t = today();
   const full = d => milesOf(L[d]) >= CONFIG.dailyMiles - 1e-9;
-  const done = Object.keys(L).filter(full).length;
-  const miles = Object.values(L).reduce((a,v) => a + milesOf(v), 0);
+  const end = addDays(r.start, CONFIG.totalDays - 1);
+  const keys = Object.keys(L).filter(d => d >= r.start && d <= end);
+  const done = keys.filter(full).length;
+  const miles = keys.reduce((a,d) => a + milesOf(L[d]), 0);
   const dayN = Math.min(CONFIG.totalDays, Math.max(0, diff(r.start, t) + 1));
   let streak = 0, d = full(t) ? t : addDays(t,-1);
   while (full(d)) { streak++; d = addDays(d,-1); }
-  return { L, done, miles, dayN, streak, ranToday: full(t), missed: Math.max(0, dayN - done - (full(t)?0:1)) };
+  return { L, count: keys.length, done, miles, dayN, streak, ranToday: full(t), missed: Math.max(0, dayN - done - (full(t)?0:1)) };
 }
 
 /* ---------- render ---------- */
@@ -291,7 +406,7 @@ function yearGrid(r, s) {
     const m = milesOf(s.L[d]);
     let cls = d > t ? "future" : m >= CONFIG.dailyMiles - 1e-9 ? "done" : d < t ? "miss" : "";
     if (d === t) cls += " now";
-    out += `<i class="${cls}" title="${nice(d)}${m ? ` · ${m} mi` : ""}"></i>`;
+    out += `<i class="${cls}" data-d="${d}" title="${nice(d)}${m ? ` · ${m} mi` : ""}"></i>`;
   }
   return out;
 }
@@ -305,13 +420,29 @@ function render(data) {
   $("banner").innerHTML = Store.live ? "" :
     `<div class="banner"><b>Practice mode:</b> check-ins only save on this device. Add your Firebase config to make it shared and live for the whole crew.</div>`;
 
-  const ids = Object.keys(data.runners).sort((a,b) => (data.runners[a].joined||0) - (data.runners[b].joined||0));
+  // one card per name: the newest record wins (older copies were claimed by it)
+  const byName = {};
+  for (const [id,r] of Object.entries(data.runners)) {
+    if (!r || !r.start) continue;
+    const k = (r.name||"").trim().toLowerCase();
+    if (!byName[k] || (r.joined||0) > (data.runners[byName[k]].joined||0)) byName[k] = id;
+  }
+  const ids = Object.values(byName).sort((a,b) =>
+    (b === Store.me) - (a === Store.me) || (data.runners[a].start < data.runners[b].start ? -1 : 1));
   const all = ids.map(id => ({ id, r:data.runners[id], s:statsFor(id, data.runners[id], data.logs) }));
+
+  // account bar + join form
+  const myCard = Store.me && data.runners[Store.me];
+  $("acct").innerHTML = !Store.live || !Store.ready ? "" : Store.me
+    ? `<span>Signed in as <b>${esc(myCard ? myCard.name : "…")}</b></span><button class="linkbtn" data-signout>Sign out</button>`
+    : `<button class="btn" data-signin>Sign in</button><span>New here? Join below to get your card.</span>`;
+  $("joinSec").hidden = Store.live && !!Store.me;
+  $("addPw").hidden = !Store.live; $("addPw").required = Store.live;
 
   // crew stats
   const miles = all.reduce((a,x) => a + x.s.miles, 0);
   $("sMiles").textContent = miles.toFixed(1);
-  $("sRuns").textContent = all.reduce((a,x) => a + Object.keys(x.s.L).length, 0);
+  $("sRuns").textContent = all.reduce((a,x) => a + x.s.count, 0);
   $("sToday").textContent = `${all.filter(x => x.s.ranToday).length}/${all.length}`;
   $("sStreak").textContent = all.length ? Math.max(...all.map(x => x.s.streak)) + "🔥" : "0";
   const next = JOURNEY.find(([d]) => d > miles) || JOURNEY[JOURNEY.length-1];
@@ -322,14 +453,14 @@ function render(data) {
   $("jBar").style.width = Math.min(100, (miles-prevD)/(next[0]-prevD)*100) + "%";
 
   // runner cards
-  $("runners").innerHTML = all.length ? all.map(({id,r,s}) => `
-    <article class="card" style="--c:${r.color}">
-      <button class="x" data-remove="${id}" title="Remove runner" aria-label="Remove ${esc(r.name)}">×</button>
+  $("runners").innerHTML = all.length ? all.map(({id,r,s}) => { const mine = canEdit(id); return `
+    <article class="card${Store.live && mine ? " mine" : ""}" style="--c:${r.color}">
+      ${mine ? `<button class="x" data-remove="${id}" title="Remove runner" aria-label="Remove ${esc(r.name)}">×</button>` : ""}
       <div class="card-top">
         <div class="ring">${ring(s.done/CONFIG.totalDays, r.color)}
           <div class="num"><div><b>${s.done}</b><small>/ ${CONFIG.totalDays}</small></div></div></div>
         <div class="who">
-          <h3><span class="dot" style="background:${r.color}"></span>${esc(r.name)}</h3>
+          <h3><span class="dot" style="background:${r.color}"></span>${esc(r.name)}${Store.live && mine ? ` <span class="you">You</span>` : ""}</h3>
           <div class="meta">${s.dayN ? `Day ${s.dayN} of ${CONFIG.totalDays}` : `Starts ${nice(r.start)}`} · ${s.miles.toFixed(1)} mi</div>
           <div class="chips">
             <span class="chip fire">${s.streak} day streak 🔥</span>
@@ -337,13 +468,15 @@ function render(data) {
           </div>
         </div>
       </div>
-      <div class="grid">${yearGrid(r,s)}</div>
-      <div class="actions">
+      <div class="grid" data-g="${id}">${yearGrid(r,s)}</div>
+      ${mine ? `<div class="actions">
         <button class="btn ${s.ranToday ? "doneToday" : ""}" data-today="${id}">
           ${s.ranToday ? "✓ Done today" : `Log today's ${CONFIG.dailyMiles}`}</button>
-        <button class="btn ghost" data-edit="${id}">Other day</button>
-      </div>
-    </article>`).join("")
+        <button class="btn ghost" data-hist="${id}">Past runs</button>
+      </div>` : !r.uid && !Store.me ? `<div class="actions">
+        <button class="btn ghost" style="flex:1" data-claim="${esc(r.name)}">This is me: set a password</button>
+      </div>` : ""}
+    </article>`; }).join("")
     : `<p class="empty">No runners yet. Add yourself below 👇</p>`;
 
   // leaderboard
@@ -355,12 +488,19 @@ function render(data) {
     : `<li class="empty">Nobody yet.</li>`;
 
   // feed
-  const feed = [];
-  all.forEach(({id,r,s}) => Object.entries(s.L).forEach(([d,v]) => feed.push({ name:r.name, d, m:milesOf(v), t:(v&&v.t)||0 })));
-  feed.sort((a,b) => b.t - a.t || (a.d < b.d ? 1 : -1));
-  $("feed").innerHTML = feed.length ? feed.slice(0,8).map(f =>
-    `<li><b>${esc(f.name)}</b> ran ${f.m} mi${f.d === t ? " today" : ` on ${nice(f.d)}`}</li>`).join("")
-    : `<li>No runs yet — be the first.</li>`;
+  // group runs saved together (a backfill) into one feed line
+  const groups = {};
+  all.forEach(({id,r,s}) => Object.entries(s.L).forEach(([d,v]) => {
+    const tt = (v&&v.t)||0, k = id + "|" + tt;
+    (groups[k] ||= { name:r.name, t:tt, items:[] }).items.push({ d, m:milesOf(v) });
+  }));
+  const feed = Object.values(groups).sort((a,b) => b.t - a.t);
+  $("feed").innerHTML = feed.length ? feed.slice(0,8).map(g => {
+    if (g.items.length === 1) { const f = g.items[0];
+      return `<li><b>${esc(g.name)}</b> ran ${f.m} mi${f.d === t ? " today" : ` on ${nice(f.d)}`}</li>`; }
+    const tot = g.items.reduce((a,f) => a + f.m, 0);
+    return `<li><b>${esc(g.name)}</b> logged ${g.items.length} runs (${tot.toFixed(1)} mi)</li>`;
+  }).join("") : `<li>No runs yet — be the first.</li>`;
 }
 
 /* ---------- spotify ---------- */
@@ -390,27 +530,129 @@ function confetti(color) {
 
 /* ---------- interactions ---------- */
 let editing = null;
+function canEdit(id) { return !Store.live || (!!Store.me && id === Store.me); }
+let toastT;
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 3500); }
+function guard(p) {
+  if (p && p.catch) p.catch(err => toast(/permission/i.test((err && (err.code || err.message)) || "")
+    ? "You can only edit your own card. Are you signed in?" : "Couldn't save: " + (err.message || err)));
+}
+function authMsg(err) {
+  const c = (err && err.code) || "";
+  if (c === "bad-name") return "Use at least one letter or number in your name.";
+  if (c.includes("email-already-in-use")) return "That name is taken. If it's you, sign in instead.";
+  if (c.includes("weak-password")) return "Password needs at least 6 characters.";
+  if (c.includes("invalid-credential") || c.includes("wrong-password") || c.includes("user-not-found") || c.includes("invalid-email"))
+    return "Name or password doesn't match.";
+  if (c.includes("too-many-requests")) return "Too many tries. Wait a minute and try again.";
+  if (c.includes("operation-not-allowed") || c.includes("configuration-not-found"))
+    return "Sign-in isn't switched on yet: Firebase → Authentication → Sign-in method → enable Email/Password.";
+  if (c.includes("network")) return "No connection. Check your internet and try again.";
+  return (err && err.message) || "Something went wrong.";
+}
+function openSingle(id, date) {
+  editing = id; const r = lastData.runners[id], v = (lastData.logs[id] || {})[date];
+  $("logTitle").textContent = `${r.name} · ${nice(date)}`;
+  $("logDate").value = date;
+  $("logDate").max = today();
+  $("logMiles").value = v ? milesOf(v) : CONFIG.dailyMiles;
+  $("logDlg").showModal();
+}
+
+/* ---------- past runs (backfill) ---------- */
+let hist = null;
+const fullMi = v => parseFloat(v) >= CONFIG.dailyMiles - 1e-9;
+function openHistory(id) {
+  const r = lastData.runners[id], L = lastData.logs[id] || {};
+  hist = { id, vals:{} };
+  for (const [d,v] of Object.entries(L)) hist.vals[d] = String(milesOf(v));
+  $("histTitle").textContent = `Past runs · ${r.name}`;
+  $("histStart").value = r.start; $("histStart").max = today();
+  syncDayN(); drawHist();
+  $("histDlg").showModal();
+  $("histList").scrollTop = 0;
+}
+function syncDayN() { const s = $("histStart").value; $("histDayN").value = s ? Math.max(1, diff(s, today()) + 1) : ""; }
+function drawHist() {
+  const s = $("histStart").value, t = today();
+  if (!s || s > t) { $("histList").innerHTML = `<p class="empty">Pick a Day 1 on or before today.</p>`; return; }
+  const n = Math.min(CONFIG.totalDays, diff(s,t) + 1);
+  let out = "";
+  for (let i = n - 1; i >= 0; i--) {
+    const d = addDays(s,i), v = hist.vals[d] ?? "";
+    out += `<div class="hrow${fullMi(v) ? " full" : ""}"><span class="dn">Day ${i+1}</span>
+      <span class="dd">${parse(d).toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}${d === t ? " · today" : ""}</span>
+      <input type="number" inputmode="decimal" step="0.01" min="0" placeholder="—" data-hd="${d}" value="${esc(v)}" aria-label="Miles on ${nice(d)}"></div>`;
+  }
+  $("histList").innerHTML = out;
+}
+$("histList").addEventListener("input", e => {
+  const d = e.target.dataset.hd; if (!d) return;
+  hist.vals[d] = e.target.value;
+  e.target.closest(".hrow").classList.toggle("full", fullMi(e.target.value));
+});
+$("histStart").addEventListener("change", () => { syncDayN(); drawHist(); });
+$("histDayN").addEventListener("input", () => {
+  const n = parseInt($("histDayN").value, 10);
+  if (n >= 1) { $("histStart").value = addDays(today(), -(n - 1)); drawHist(); }
+});
+$("histFill").onclick = () => {
+  $("histList").querySelectorAll("input[data-hd]").forEach(inp => {
+    if (!inp.value) { inp.value = CONFIG.dailyMiles; hist.vals[inp.dataset.hd] = String(CONFIG.dailyMiles); inp.closest(".hrow").classList.add("full"); }
+  });
+};
+$("histCancel").onclick = () => $("histDlg").close();
+$("histForm").addEventListener("submit", () => {
+  const s = $("histStart").value, t = today(), id = hist.id;
+  if (!s || s > t) return;
+  const n = Math.min(CONFIG.totalDays, diff(s,t) + 1);
+  const old = lastData.logs[id] || {}, patch = {}, now = Date.now();
+  let added = 0;
+  for (let i = 0; i < n; i++) {
+    const d = addDays(s,i), v = parseFloat(hist.vals[d]);
+    const m = v > 0 ? Math.round(v * 100) / 100 : 0, prev = milesOf(old[d]);
+    if (m && m !== prev) { patch[d] = { m, t: now }; if (fullMi(m) && !fullMi(prev)) added++; }
+    else if (!m && old[d]) patch[d] = null;
+  }
+  guard(Store.saveHistory(id, s, patch));
+  if (added) confetti(lastData.runners[id].color);
+});
+
 document.addEventListener("click", e => {
+  const dot = e.target.closest(".grid i[data-d]");
+  if (dot && !dot.classList.contains("future") && canEdit(dot.parentElement.dataset.g)) { openSingle(dot.parentElement.dataset.g, dot.dataset.d); return; }
   const b = e.target.closest("button"); if (!b) return;
   const d = lastData;
-  if (b.dataset.today) {
+  if (b.hasAttribute("data-signin")) { $("authErr").textContent = ""; $("authDlg").showModal(); return; }
+  if (b.hasAttribute("data-signout")) { Store.signOut(); return; }
+  if (b.dataset.claim) {
+    $("addName").value = b.dataset.claim; $("addErr").textContent = "";
+    $("joinSec").scrollIntoView({ behavior:"smooth", block:"center" }); $("addPw").focus();
+    toast(`Choose a password for ${b.dataset.claim}. Your runs come with you.`);
+    return;
+  }
+  if (b.dataset.today && canEdit(b.dataset.today)) {
     const id = b.dataset.today, r = d.runners[id], s = statsFor(id, r, d.logs);
-    if (s.ranToday) { if (confirm(`Undo ${r.name}'s run for today?`)) Store.removeLog(id, today()); return; }
-    Store.setLog(id, today(), CONFIG.dailyMiles);
+    if (s.ranToday) { if (confirm(`Undo ${r.name}'s run for today?`)) guard(Store.removeLog(id, today())); return; }
+    guard(Store.setLog(id, today(), CONFIG.dailyMiles));
     confetti(r.color);
   }
-  if (b.dataset.edit) {
-    editing = b.dataset.edit; const r = d.runners[editing];
-    $("logTitle").textContent = `Log a run for ${r.name}`;
-    $("logDate").value = addDays(today(), -1);
-    $("logDate").max = today();
-    $("logMiles").value = CONFIG.dailyMiles;
-    $("logDlg").showModal();
-  }
-  if (b.dataset.remove) {
+  if (b.dataset.hist && canEdit(b.dataset.hist)) openHistory(b.dataset.hist);
+  if (b.dataset.remove && canEdit(b.dataset.remove)) {
     const r = d.runners[b.dataset.remove];
-    if (confirm(`Remove ${r.name} and all their runs? This can't be undone.`)) Store.removeRunner(b.dataset.remove);
+    if (confirm(`Remove ${r.name} and all their runs? This can't be undone.`)) guard(Store.removeRunner(b.dataset.remove));
   }
+});
+
+$("authCancel").onclick = () => $("authDlg").close();
+$("authForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  $("authErr").textContent = ""; $("authGo").disabled = true;
+  try {
+    await Store.signIn($("authName").value, $("authPw").value);
+    $("authPw").value = ""; $("authDlg").close();
+  } catch (err) { $("authErr").textContent = authMsg(err); }
+  $("authGo").disabled = false;
 });
 $("logDate").addEventListener("change", () => {
   const v = editing && lastData.logs[editing] && lastData.logs[editing][$("logDate").value];
@@ -418,18 +660,30 @@ $("logDate").addEventListener("change", () => {
 });
 $("logForm").addEventListener("submit", () => {
   const m = parseFloat($("logMiles").value);
-  if (editing && m > 0) { Store.setLog(editing, $("logDate").value, Math.round(m*100)/100); if (m >= CONFIG.dailyMiles) confetti(lastData.runners[editing].color); }
+  if (editing && m > 0) { guard(Store.setLog(editing, $("logDate").value, Math.round(m*100)/100)); if (m >= CONFIG.dailyMiles) confetti(lastData.runners[editing].color); }
 });
 $("logCancel").onclick = () => $("logDlg").close();
-$("logDelete").onclick = () => { if (editing) Store.removeLog(editing, $("logDate").value); $("logDlg").close(); };
+$("logDelete").onclick = () => { if (editing) guard(Store.removeLog(editing, $("logDate").value)); $("logDlg").close(); };
 
 $("addStart").value = today();
-$("addForm").addEventListener("submit", e => {
+$("addStart").max = today();
+$("addForm").addEventListener("submit", async e => {
   e.preventDefault();
   const name = $("addName").value.trim(); if (!name) return;
-  const n = Object.keys(lastData.runners).length;
-  Store.addRunner({ name, start: $("addStart").value || today(), color: COLORS[n % COLORS.length], joined: Date.now() });
-  $("addName").value = "";
+  const start = $("addStart").value || today();
+  $("addErr").textContent = "";
+  if (!Store.live) {
+    const n = Object.keys(lastData.runners).length;
+    Store.addRunner({ name, start, color: COLORS[n % COLORS.length], joined: Date.now() });
+    $("addName").value = ""; return;
+  }
+  const btn = e.submitter || $("addForm").querySelector("button"); btn.disabled = true;
+  try {
+    await Store.signUp(name, $("addPw").value, start);
+    $("addName").value = ""; $("addPw").value = "";
+    toast(`Welcome, ${name}! Tap "Past runs" to fill in your history.`);
+  } catch (err) { $("addErr").textContent = authMsg(err); }
+  btn.disabled = false;
 });
 
 Store.subscribe(render);
