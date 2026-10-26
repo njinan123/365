@@ -126,6 +126,26 @@ dialog.wide{width:min(460px,94vw)}
 .you{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:var(--c);color:#0d0f12;border-radius:6px;padding:1px 6px}
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
 .toast.on{opacity:1}
+.grid i.done.ok{background:color-mix(in srgb,var(--c) 50%,var(--panel2))}
+.grid i.part{background:color-mix(in srgb,var(--c) 22%,var(--panel2))}
+.chip.good{color:var(--accent)}
+dialog textarea{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;color:inherit;resize:vertical}
+.check{display:flex!important;gap:8px;align-items:flex-start;color:var(--text)!important;font-size:14px!important;margin-top:12px!important;cursor:pointer}
+.check[hidden]{display:none!important}
+.check input{width:auto!important;margin-top:3px;accent-color:var(--accent)}
+.check small{display:block;color:var(--muted);font-size:12px}
+.hrow{flex-wrap:wrap}
+.hrow.ok .dn{color:color-mix(in srgb,var(--accent) 60%,var(--muted))}
+.hrow .dd{min-width:0}
+.np{display:block;font-size:12px;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.np:empty{display:none}
+.more{width:36px;height:36px;border-radius:10px;background:var(--panel2);flex:none;color:var(--muted);font-size:15px}
+.more.on{color:var(--accent);font-weight:800}
+.hx{flex-basis:100%;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:4px 0 2px 72px}
+.hx[hidden]{display:none}
+.hx input[type=text]{flex:1;min-width:160px;width:auto;text-align:left}
+.hx .check{margin-top:0!important;font-size:13px!important}
+@media (max-width:480px){.hx{padding-left:0}}
 .quote{text-align:center;color:var(--muted);font-style:italic;margin-top:36px;font-size:14px}
 canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 </style>
@@ -194,7 +214,11 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
     <label for="logDate">Date</label>
     <input type="date" id="logDate" required>
     <label for="logMiles">Miles</label>
-    <input type="number" id="logMiles" step="0.01" min="0.01" required>
+    <input type="number" id="logMiles" step="0.01" min="0" inputmode="decimal" placeholder="0">
+    <label for="logNote">Note (optional)</label>
+    <textarea id="logNote" rows="2" maxlength="280" placeholder="How'd it go?"></textarea>
+    <label class="check" id="logXWrap"><input type="checkbox" id="logX">
+      <span>Count this day anyway<small>Short today, I'll make up the miles</small></span></label>
     <div class="actions">
       <button type="button" class="btn ghost" id="logDelete">Remove</button>
       <button type="button" class="btn ghost" id="logCancel">Cancel</button>
@@ -211,7 +235,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
       <div><label for="histDayN">So today is day</label><input type="number" id="histDayN" min="1" inputmode="numeric"></div>
     </div>
     <div class="histbar">
-      <span>Miles per day · blank = missed</span>
+      <span>Miles per day · ✎ for notes</span>
       <button type="button" class="linkbtn" id="histFill">Fill blanks with 3.65</button>
     </div>
     <div class="hist" id="histList"></div>
@@ -294,6 +318,16 @@ const diff = (a,b) => Math.round((parse(b)-parse(a))/864e5);
 const today = () => ymd(new Date());
 const nice = s => parse(s).toLocaleDateString(undefined,{month:"short",day:"numeric"});
 const milesOf = v => typeof v === "number" ? v : (v && v.m) || 0;
+const isShort = m => m < CONFIG.dailyMiles - 1e-9;
+// a day counts if you hit the distance, or you marked it "count anyway"
+const counts = v => !!v && (!isShort(milesOf(v)) || !!v.x);
+// build a log entry: {m: miles, t: saved at, n?: note, x?: counted anyway}
+const entry = (m, n, x) => {
+  const e = { m: Math.round((m || 0) * 100) / 100, t: Date.now() };
+  if (n) e.n = String(n).slice(0, 280);
+  if (x && isShort(e.m)) e.x = true;
+  return e;
+};
 
 /* ---------- storage (Firebase live, or this-device demo) ---------- */
 const Store = (() => {
@@ -343,7 +377,7 @@ const Store = (() => {
         await db.ref().update({["runners/"+id]:null,["logs/"+id]:null});
         try { await auth.currentUser.delete(); } catch(e) { await auth.signOut(); }
       },
-      setLog(id,date,m){ return db.ref(`logs/${id}/${date}`).set({m, t:Date.now()}); },
+      setLog(id,date,e){ return db.ref(`logs/${id}/${date}`).set(e); },
       removeLog(id,date){ return db.ref(`logs/${id}/${date}`).remove(); },
       saveHistory(id,start,patch){
         const u = { [`runners/${id}/start`]: start };
@@ -363,7 +397,7 @@ const Store = (() => {
     subscribe(f){ subs.push(f); f(data); },
     addRunner(r){ data.runners["r"+Date.now()] = r; save(); },
     removeRunner(id){ delete data.runners[id]; delete data.logs[id]; save(); },
-    setLog(id,date,m){ (data.logs[id] ||= {})[date] = {m, t:Date.now()}; save(); },
+    setLog(id,date,e){ (data.logs[id] ||= {})[date] = e; save(); },
     removeLog(id,date){ if (data.logs[id]) delete data.logs[id][date]; save(); },
     saveHistory(id,start,patch){
       data.runners[id].start = start;
@@ -377,15 +411,20 @@ const Store = (() => {
 /* ---------- stats per runner ---------- */
 function statsFor(id, r, logs) {
   const L = logs[id] || {}, t = today();
-  const full = d => milesOf(L[d]) >= CONFIG.dailyMiles - 1e-9;
+  const full = d => counts(L[d]);
   const end = addDays(r.start, CONFIG.totalDays - 1);
   const keys = Object.keys(L).filter(d => d >= r.start && d <= end);
   const done = keys.filter(full).length;
   const miles = keys.reduce((a,d) => a + milesOf(L[d]), 0);
-  const dayN = Math.min(CONFIG.totalDays, Math.max(0, diff(r.start, t) + 1));
+  const rawDay = diff(r.start, t) + 1;
+  const dayN = Math.min(CONFIG.totalDays, Math.max(0, rawDay));
   let streak = 0, d = full(t) ? t : addDays(t,-1);
   while (full(d)) { streak++; d = addDays(d,-1); }
-  return { L, count: keys.length, done, miles, dayN, streak, ranToday: full(t), missed: Math.max(0, dayN - done - (full(t)?0:1)) };
+  // miles bank: miles run vs. miles owed so far (today only owed once you log it)
+  const owedDays = rawDay > CONFIG.totalDays ? CONFIG.totalDays
+    : Math.max(0, dayN - 1) + (milesOf(L[t]) > 0 || full(t) ? 1 : 0);
+  const bank = Math.round((miles - owedDays * CONFIG.dailyMiles) * 100) / 100;
+  return { L, count: keys.length, done, miles, dayN, streak, bank, ranToday: full(t), missed: Math.max(0, dayN - done - (full(t)?0:1)) };
 }
 
 /* ---------- render ---------- */
@@ -403,10 +442,11 @@ function yearGrid(r, s) {
   const t = today(); let out = "";
   for (let i = 0; i < CONFIG.totalDays; i++) {
     const d = addDays(r.start, i);
-    const m = milesOf(s.L[d]);
-    let cls = d > t ? "future" : m >= CONFIG.dailyMiles - 1e-9 ? "done" : d < t ? "miss" : "";
+    const v = s.L[d], m = milesOf(v), ok = counts(v);
+    let cls = d > t ? "future" : ok ? (v.x && isShort(m) ? "done ok" : "done") : m > 0 ? "part" : d < t ? "miss" : "";
     if (d === t) cls += " now";
-    out += `<i class="${cls}" data-d="${d}" title="${nice(d)}${m ? ` · ${m} mi` : ""}"></i>`;
+    const tip = nice(d) + (m ? ` · ${m} mi` : "") + (ok && isShort(m) ? " · counted" : "") + (v && v.n ? ` · “${v.n}”` : "");
+    out += `<i class="${cls}" data-d="${d}" title="${esc(tip)}"></i>`;
   }
   return out;
 }
@@ -464,7 +504,10 @@ function render(data) {
           <div class="meta">${s.dayN ? `Day ${s.dayN} of ${CONFIG.totalDays}` : `Starts ${nice(r.start)}`} · ${s.miles.toFixed(1)} mi</div>
           <div class="chips">
             <span class="chip fire">${s.streak} day streak 🔥</span>
-            ${s.missed ? `<span class="chip">${s.missed} to make up</span>` : s.dayN ? `<span class="chip">On pace ✓</span>` : ""}
+            ${!s.dayN ? "" : s.bank > 0.049 ? `<span class="chip good">+${s.bank.toFixed(1)} mi banked</span>`
+              : s.bank < -0.049 ? `<span class="chip">${(-s.bank).toFixed(1)} mi to make up</span>`
+              : `<span class="chip good">On pace ✓</span>`}
+            ${s.missed ? `<span class="chip">${s.missed} day${s.missed > 1 ? "s" : ""} missed</span>` : ""}
           </div>
         </div>
       </div>
@@ -492,12 +535,13 @@ function render(data) {
   const groups = {};
   all.forEach(({id,r,s}) => Object.entries(s.L).forEach(([d,v]) => {
     const tt = (v&&v.t)||0, k = id + "|" + tt;
-    (groups[k] ||= { name:r.name, t:tt, items:[] }).items.push({ d, m:milesOf(v) });
+    (groups[k] ||= { name:r.name, t:tt, items:[] }).items.push({ d, m:milesOf(v), n:v && v.n, x:counts(v) && isShort(milesOf(v)) });
   }));
   const feed = Object.values(groups).sort((a,b) => b.t - a.t);
   $("feed").innerHTML = feed.length ? feed.slice(0,8).map(g => {
-    if (g.items.length === 1) { const f = g.items[0];
-      return `<li><b>${esc(g.name)}</b> ran ${f.m} mi${f.d === t ? " today" : ` on ${nice(f.d)}`}</li>`; }
+    if (g.items.length === 1) { const f = g.items[0], when = f.d === t ? " today" : ` on ${nice(f.d)}`;
+      const what = f.m > 0 ? `ran ${f.m} mi${f.x ? " (counted)" : ""}${when}` : f.x ? `took a counted rest day${when}` : `left a note${when}`;
+      return `<li><b>${esc(g.name)}</b> ${what}${f.n ? ` · “${esc(f.n)}”` : ""}</li>`; }
     const tot = g.items.reduce((a,f) => a + f.m, 0);
     return `<li><b>${esc(g.name)}</b> logged ${g.items.length} runs (${tot.toFixed(1)} mi)</li>`;
   }).join("") : `<li>No runs yet — be the first.</li>`;
@@ -555,17 +599,33 @@ function openSingle(id, date) {
   $("logTitle").textContent = `${r.name} · ${nice(date)}`;
   $("logDate").value = date;
   $("logDate").max = today();
-  $("logMiles").value = v ? milesOf(v) : CONFIG.dailyMiles;
+  fillSingle();
   $("logDlg").showModal();
 }
+function fillSingle() {
+  const v = editing && (lastData.logs[editing] || {})[$("logDate").value];
+  $("logMiles").value = v ? (milesOf(v) || "") : CONFIG.dailyMiles;
+  $("logNote").value = (v && v.n) || "";
+  $("logX").checked = !!(v && v.x);
+  syncX();
+}
+function syncX() { $("logXWrap").hidden = !isShort(parseFloat($("logMiles").value) || 0); }
+$("logMiles").addEventListener("input", syncX);
 
 /* ---------- past runs (backfill) ---------- */
 let hist = null;
-const fullMi = v => parseFloat(v) >= CONFIG.dailyMiles - 1e-9;
+const fullMi = v => !isShort(parseFloat(v) || 0);
+function rowState(row, v) {
+  const short = isShort(parseFloat(v.m) || 0);
+  row.classList.toggle("full", !short || !!v.x);
+  row.classList.toggle("ok", short && !!v.x);
+  row.querySelector(".more").classList.toggle("on", !!(v.n || (short && v.x)));
+  row.querySelector(".np").textContent = v.n || "";
+}
 function openHistory(id) {
   const r = lastData.runners[id], L = lastData.logs[id] || {};
   hist = { id, vals:{} };
-  for (const [d,v] of Object.entries(L)) hist.vals[d] = String(milesOf(v));
+  for (const [d,v] of Object.entries(L)) hist.vals[d] = { m: milesOf(v) ? String(milesOf(v)) : "", n: (v && v.n) || "", x: !!(v && v.x) };
   $("histTitle").textContent = `Past runs · ${r.name}`;
   $("histStart").value = r.start; $("histStart").max = today();
   syncDayN(); drawHist();
@@ -579,17 +639,31 @@ function drawHist() {
   const n = Math.min(CONFIG.totalDays, diff(s,t) + 1);
   let out = "";
   for (let i = n - 1; i >= 0; i--) {
-    const d = addDays(s,i), v = hist.vals[d] ?? "";
-    out += `<div class="hrow${fullMi(v) ? " full" : ""}"><span class="dn">Day ${i+1}</span>
-      <span class="dd">${parse(d).toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}${d === t ? " · today" : ""}</span>
-      <input type="number" inputmode="decimal" step="0.01" min="0" placeholder="—" data-hd="${d}" value="${esc(v)}" aria-label="Miles on ${nice(d)}"></div>`;
+    const d = addDays(s,i), v = hist.vals[d] || { m:"", n:"", x:false };
+    out += `<div class="hrow" data-row="${d}"><span class="dn">Day ${i+1}</span>
+      <span class="dd">${parse(d).toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}${d === t ? " · today" : ""}<span class="np"></span></span>
+      <input type="number" inputmode="decimal" step="0.01" min="0" placeholder="—" data-hd="${d}" value="${esc(v.m)}" aria-label="Miles on ${nice(d)}">
+      <button type="button" class="more" data-more aria-label="Note or count it for ${nice(d)}">✎</button>
+      <div class="hx" hidden>
+        <input type="text" maxlength="280" placeholder="Note for this day" data-hn value="${esc(v.n)}">
+        <label class="check"><input type="checkbox" data-hx ${v.x ? "checked" : ""}> Count it anyway</label>
+      </div></div>`;
   }
   $("histList").innerHTML = out;
+  $("histList").querySelectorAll(".hrow").forEach(row => rowState(row, hist.vals[row.dataset.row] || {}));
 }
 $("histList").addEventListener("input", e => {
-  const d = e.target.dataset.hd; if (!d) return;
-  hist.vals[d] = e.target.value;
-  e.target.closest(".hrow").classList.toggle("full", fullMi(e.target.value));
+  const row = e.target.closest(".hrow"); if (!row) return;
+  const d = row.dataset.row, v = (hist.vals[d] ||= { m:"", n:"", x:false });
+  if ("hd" in e.target.dataset) v.m = e.target.value;
+  if ("hn" in e.target.dataset) v.n = e.target.value;
+  if ("hx" in e.target.dataset) v.x = e.target.checked;
+  rowState(row, v);
+});
+$("histList").addEventListener("click", e => {
+  const b = e.target.closest("[data-more]"); if (!b) return;
+  const hx = b.parentElement.querySelector(".hx"); hx.hidden = !hx.hidden;
+  if (!hx.hidden) hx.querySelector("input").focus();
 });
 $("histStart").addEventListener("change", () => { syncDayN(); drawHist(); });
 $("histDayN").addEventListener("input", () => {
@@ -598,7 +672,8 @@ $("histDayN").addEventListener("input", () => {
 });
 $("histFill").onclick = () => {
   $("histList").querySelectorAll("input[data-hd]").forEach(inp => {
-    if (!inp.value) { inp.value = CONFIG.dailyMiles; hist.vals[inp.dataset.hd] = String(CONFIG.dailyMiles); inp.closest(".hrow").classList.add("full"); }
+    const row = inp.closest(".hrow"), v = (hist.vals[row.dataset.row] ||= { m:"", n:"", x:false });
+    if (!inp.value && !v.x) { inp.value = CONFIG.dailyMiles; v.m = String(CONFIG.dailyMiles); rowState(row, v); }
   });
 };
 $("histCancel").onclick = () => $("histDlg").close();
@@ -609,10 +684,13 @@ $("histForm").addEventListener("submit", () => {
   const old = lastData.logs[id] || {}, patch = {}, now = Date.now();
   let added = 0;
   for (let i = 0; i < n; i++) {
-    const d = addDays(s,i), v = parseFloat(hist.vals[d]);
-    const m = v > 0 ? Math.round(v * 100) / 100 : 0, prev = milesOf(old[d]);
-    if (m && m !== prev) { patch[d] = { m, t: now }; if (fullMi(m) && !fullMi(prev)) added++; }
-    else if (!m && old[d]) patch[d] = null;
+    const d = addDays(s,i), v = hist.vals[d] || {}, p = old[d];
+    const raw = parseFloat(v.m), m = raw > 0 ? Math.round(raw * 100) / 100 : 0;
+    const n = (v.n || "").trim(), x = !!v.x && isShort(m);
+    const exists = m > 0 || !!n || x;
+    if (!exists) { if (p) patch[d] = null; continue; }
+    const same = p && milesOf(p) === m && (p.n || "") === n && !!p.x === x;
+    if (!same) { patch[d] = entry(m, n, x); patch[d].t = now; if (counts(patch[d]) && !counts(p)) added++; }
   }
   guard(Store.saveHistory(id, s, patch));
   if (added) confetti(lastData.runners[id].color);
@@ -634,7 +712,8 @@ document.addEventListener("click", e => {
   if (b.dataset.today && canEdit(b.dataset.today)) {
     const id = b.dataset.today, r = d.runners[id], s = statsFor(id, r, d.logs);
     if (s.ranToday) { if (confirm(`Undo ${r.name}'s run for today?`)) guard(Store.removeLog(id, today())); return; }
-    guard(Store.setLog(id, today(), CONFIG.dailyMiles));
+    const prev = s.L[today()];
+    guard(Store.setLog(id, today(), entry(Math.max(CONFIG.dailyMiles, milesOf(prev)), prev && prev.n)));
     confetti(r.color);
   }
   if (b.dataset.hist && canEdit(b.dataset.hist)) openHistory(b.dataset.hist);
@@ -654,13 +733,15 @@ $("authForm").addEventListener("submit", async e => {
   } catch (err) { $("authErr").textContent = authMsg(err); }
   $("authGo").disabled = false;
 });
-$("logDate").addEventListener("change", () => {
-  const v = editing && lastData.logs[editing] && lastData.logs[editing][$("logDate").value];
-  $("logMiles").value = v ? milesOf(v) : CONFIG.dailyMiles;
-});
+$("logDate").addEventListener("change", fillSingle);
 $("logForm").addEventListener("submit", () => {
-  const m = parseFloat($("logMiles").value);
-  if (editing && m > 0) { guard(Store.setLog(editing, $("logDate").value, Math.round(m*100)/100)); if (m >= CONFIG.dailyMiles) confetti(lastData.runners[editing].color); }
+  if (!editing) return;
+  const d = $("logDate").value, m = parseFloat($("logMiles").value) || 0, n = $("logNote").value.trim(), x = $("logX").checked;
+  const prev = (lastData.logs[editing] || {})[d];
+  if (!(m > 0) && !n && !(x && isShort(m))) { if (prev) guard(Store.removeLog(editing, d)); return; }
+  const e = entry(m, n, x);
+  guard(Store.setLog(editing, d, e));
+  if (counts(e) && !counts(prev)) confetti(lastData.runners[editing].color);
 });
 $("logCancel").onclick = () => $("logDlg").close();
 $("logDelete").onclick = () => { if (editing) guard(Store.removeLog(editing, $("logDate").value)); $("logDlg").close(); };
