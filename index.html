@@ -146,6 +146,74 @@ dialog textarea{width:100%;background:var(--panel2);border:1px solid var(--line)
 .hx input[type=text]{flex:1;min-width:160px;width:auto;text-align:left}
 .hx .check{margin-top:0!important;font-size:13px!important}
 @media (max-width:480px){.hx{padding-left:0}}
+
+/* sick days, time, segmented choice */
+:root{--sick:#7aa7ff}
+.grid i.sick{background:color-mix(in srgb,var(--sick) 55%,var(--panel2))}
+.seg{display:flex;background:var(--panel2);border-radius:12px;padding:3px;gap:3px}
+.seg label{flex:1;margin:0!important;display:block!important;cursor:pointer}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:block;text-align:center;padding:8px 4px;border-radius:9px;font-size:13px;font-weight:700;color:var(--muted)}
+.seg input:checked + span{background:var(--panel);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.seg input:focus-visible + span{outline:2px solid var(--accent)}
+.khelp,.pace-out{font-size:12px;color:var(--muted);margin-top:6px}
+.khelp:empty,.pace-out:empty{display:none}
+#logKWrap[hidden]{display:none}
+.hrow .dn{width:54px}
+.hrow .mi{width:62px;padding:8px 8px}
+.hrow .tm{width:66px;padding:8px 8px;text-align:right}
+.hrow{gap:8px}
+.hrow input[type=number]{-moz-appearance:textfield;appearance:textfield}
+.hrow input[type=number]::-webkit-inner-spin-button,.hrow input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.hx{padding-left:64px}
+@media (max-width:480px){.hx{padding-left:0}}
+.hx select{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;font-size:13px;color:inherit}
+.hx select:disabled{opacity:.45}
+.hrow.sick .dn{color:var(--sick)}
+.colhead{display:flex;gap:8px;justify-content:flex-end;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:6px 46px 4px 0}
+.colhead span:first-child{width:62px;text-align:right}
+.colhead span:last-child{width:66px;text-align:right}
+
+/* view-only runner page */
+.card-top[data-view]{cursor:pointer}
+.lb li[data-view]{cursor:pointer}
+.lb li[data-view]:hover .nm{text-decoration:underline}
+dialog.view{width:min(680px,96vw);max-height:92vh;overflow:auto;padding:0}
+.vhead{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;background:var(--panel);border-bottom:1px solid var(--line);padding:14px 18px}
+.vhead h3{display:flex;align-items:center;gap:8px;margin:0;font-size:20px}
+.vhead .dot{width:12px;height:12px;border-radius:50%}
+.vclose{font-size:26px;line-height:1;color:var(--muted);width:36px;height:36px;border-radius:10px}
+.vclose:hover{background:var(--panel2)}
+#viewBody{padding:14px 18px 20px}
+.vmeta{color:var(--muted);font-size:13px;margin-bottom:12px}
+.vstats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media (max-width:520px){.vstats{grid-template-columns:repeat(2,1fr)}}
+.vt{background:var(--panel2);border-radius:12px;padding:10px 12px}
+.vt small{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.vt b{font-family:"Archivo Black",Inter,sans-serif;font-size:20px;font-weight:400}
+.vt b span{font-size:12px;color:var(--muted)}
+.vgrid{margin:16px 0 8px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:5px}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block;background:var(--panel2)}
+.legend i.done{background:var(--c)}
+.legend i.done.ok{background:color-mix(in srgb,var(--c) 50%,var(--panel2))}
+.legend i.part{background:color-mix(in srgb,var(--c) 22%,var(--panel2))}
+.legend i.sick{background:color-mix(in srgb,var(--sick) 55%,var(--panel2))}
+.legend i.miss{background:color-mix(in srgb,var(--warm) 22%,var(--panel2))}
+#viewBody h4{font-size:15px;margin:20px 0 8px}
+svg.pace{width:100%;height:auto;display:block;background:var(--panel2);border-radius:12px}
+svg.pace .lbl{font-size:12px;fill:var(--muted);font-family:Inter,sans-serif}
+svg.pace .avg{stroke:var(--muted);stroke-dasharray:4 4;stroke-width:1}
+.axis-note{font-size:11px;color:var(--muted);margin-top:4px}
+.vlog{list-style:none}
+.vlog li{padding:9px 0;border-bottom:1px solid var(--line)}
+.vlog .l1{display:flex;justify-content:space-between;gap:10px;font-size:14px}
+.vlog .l1 small{color:var(--muted);margin-left:6px}
+.vlog .l2{font-size:13px;color:var(--muted);margin-top:2px}
+.tag{font-size:11px;font-weight:800;border-radius:6px;padding:1px 6px;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--text)}
+.tag.sick{background:color-mix(in srgb,var(--sick) 25%,transparent)}
+.tag.miss{background:color-mix(in srgb,var(--warm) 20%,transparent)}
 .quote{text-align:center;color:var(--muted);font-style:italic;margin-top:36px;font-size:14px}
 canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 </style>
@@ -157,7 +225,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
   <header class="hero">
     <div>
       <h1>365 <span>×</span> 3.65</h1>
-      <p>3.65 miles a day, every day, for a year. Tap your card when today's run is done.</p>
+      <p>3.65 miles a day, every day, for a year. Walk it or run it. Tap your card when today's miles are done.</p>
     </div>
     <div class="today"><small id="todayLabel"></small><b id="todayDay"></b></div>
   </header>
@@ -167,8 +235,8 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 
   <section class="stats">
     <div class="stat"><small>Crew miles</small><div class="big" id="sMiles">0</div></div>
-    <div class="stat"><small>Runs logged</small><div class="big" id="sRuns">0</div></div>
-    <div class="stat"><small>Ran today</small><div class="big" id="sToday">0/0</div></div>
+    <div class="stat"><small>Days logged</small><div class="big" id="sRuns">0</div></div>
+    <div class="stat"><small>Done today</small><div class="big" id="sToday">0/0</div></div>
     <div class="stat"><small>Best streak now</small><div class="big" id="sStreak">0</div></div>
     <div class="stat journey">
       <small>Crew journey</small>
@@ -182,7 +250,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 
   <section id="joinSec">
     <div class="sec-head"><h2>Join the challenge</h2></div>
-    <p class="hint" id="joinHint">Pick a name, a password and the date of your Day 1. Use the same name and password to sign in on any device. Then tap "Past runs" on your card to fill in what you've already run.</p>
+    <p class="hint" id="joinHint">Pick a name, a password and the date of your Day 1. Use the same name and password to sign in on any device. Then tap "Past days" on your card to fill in what you've already done.</p>
     <form class="add panel" id="addForm">
       <input type="text" id="addName" placeholder="Name" maxlength="24" required autocomplete="username">
       <input type="password" id="addPw" placeholder="Password (6+ characters)" minlength="6" autocomplete="new-password">
@@ -196,7 +264,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
     <div class="panel">
       <h2 style="font-size:20px;margin-bottom:8px">Leaderboard</h2>
       <ol class="lb" id="lb"></ol>
-      <h2 style="font-size:20px;margin:18px 0 4px">Latest runs</h2>
+      <h2 style="font-size:20px;margin:18px 0 4px">Latest activity</h2>
       <ul class="feed" id="feed"></ul>
     </div>
     <div class="panel spotify">
@@ -210,15 +278,27 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 
 <dialog id="logDlg">
   <form method="dialog" id="logForm">
-    <h3 id="logTitle">Log a run</h3>
+    <h3 id="logTitle">Log a day</h3>
     <label for="logDate">Date</label>
     <input type="date" id="logDate" required>
-    <label for="logMiles">Miles</label>
-    <input type="number" id="logMiles" step="0.01" min="0" inputmode="decimal" placeholder="0">
+    <div class="row2">
+      <div><label for="logMiles">Miles</label>
+        <input type="number" id="logMiles" step="0.01" min="0" inputmode="decimal" placeholder="0"></div>
+      <div><label for="logTime">Time (optional)</label>
+        <input type="text" id="logTime" placeholder="mm:ss" autocomplete="off"></div>
+    </div>
+    <p class="pace-out" id="logPace"></p>
+    <div id="logKWrap">
+      <label>Short of the daily distance?</label>
+      <div class="seg" role="radiogroup">
+        <label><input type="radio" name="logK" value=""><span>Missed</span></label>
+        <label><input type="radio" name="logK" value="x"><span>Count it</span></label>
+        <label><input type="radio" name="logK" value="s"><span>🤒 Sick day</span></label>
+      </div>
+      <p class="khelp" id="logKHelp"></p>
+    </div>
     <label for="logNote">Note (optional)</label>
     <textarea id="logNote" rows="2" maxlength="280" placeholder="How'd it go?"></textarea>
-    <label class="check" id="logXWrap"><input type="checkbox" id="logX">
-      <span>Count this day anyway<small>Short today, I'll make up the miles</small></span></label>
     <div class="actions">
       <button type="button" class="btn ghost" id="logDelete">Remove</button>
       <button type="button" class="btn ghost" id="logCancel">Cancel</button>
@@ -227,15 +307,20 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
   </form>
 </dialog>
 
+<dialog id="viewDlg" class="view">
+  <div class="vhead"><h3 id="viewTitle"></h3><button type="button" class="vclose" id="viewClose" aria-label="Close">×</button></div>
+  <div id="viewBody"></div>
+</dialog>
+
 <dialog id="histDlg" class="wide">
   <form method="dialog" id="histForm">
-    <h3 id="histTitle">Past runs</h3>
+    <h3 id="histTitle">Past days</h3>
     <div class="row2">
       <div><label for="histStart">Day 1 was</label><input type="date" id="histStart" required></div>
       <div><label for="histDayN">So today is day</label><input type="number" id="histDayN" min="1" inputmode="numeric"></div>
     </div>
     <div class="histbar">
-      <span>Miles per day · ✎ for notes</span>
+      <span>✎ for notes &amp; sick days</span>
       <button type="button" class="linkbtn" id="histFill">Fill blanks with 3.65</button>
     </div>
     <div class="hist" id="histList"></div>
@@ -302,11 +387,11 @@ const JOURNEY = [
 ];
 const QUOTES = [
   "The miracle isn't that I finished. It's that I had the courage to start. — John Bingham",
-  "Run the mile you're in.",
-  "Some days the run is easy. Show up for the other ones too.",
+  "Walk or run, just do the mile you're in.",
+  "Some days the miles are easy. Show up for the other ones too.",
   "3.65 today. 3.65 tomorrow. That's the whole plan.",
   "Slow miles are still miles.",
-  "You never regret the run. You regret skipping it."
+  "You never regret the miles. You regret skipping them."
 ];
 
 /* ---------- dates ---------- */
@@ -321,13 +406,34 @@ const milesOf = v => typeof v === "number" ? v : (v && v.m) || 0;
 const isShort = m => m < CONFIG.dailyMiles - 1e-9;
 // a day counts if you hit the distance, or you marked it "count anyway"
 const counts = v => !!v && (!isShort(milesOf(v)) || !!v.x);
-// build a log entry: {m: miles, t: saved at, n?: note, x?: counted anyway}
-const entry = (m, n, x) => {
+// a sick day doesn't add to your count, but doesn't break your streak or cost miles
+const isSick = v => !!v && !counts(v) && !!v.s;
+// short-day status: "" = missed, "x" = counted anyway, "s" = sick day
+const kindOf = v => !v || !isShort(milesOf(v)) ? "" : v.x ? "x" : v.s ? "s" : "";
+// build a log entry: {m: miles, t: saved at, n?: note, x?: counted anyway, s?: sick, d?: seconds}
+const entry = (m, n, k, secs) => {
   const e = { m: Math.round((m || 0) * 100) / 100, t: Date.now() };
   if (n) e.n = String(n).slice(0, 280);
-  if (x && isShort(e.m)) e.x = true;
+  if (k === true) k = "x";
+  if (k === "x" && isShort(e.m)) e.x = true;
+  if (k === "s" && isShort(e.m)) e.s = true;
+  if (secs > 0 && e.m > 0) e.d = Math.round(secs);
   return e;
 };
+// time: "32:10", "1:02:30", "32.10" or "32" (minutes) -> seconds
+const parseTime = str => {
+  const s = String(str || "").trim(); if (!s) return 0;
+  const p = s.split(/[:.\s]+/).map(Number);
+  if (p.some(isNaN) || p.length > 3) return NaN;
+  if (p.length === 1) return p[0] * 60;
+  return p.length === 2 ? p[0] * 60 + p[1] : p[0] * 3600 + p[1] * 60 + p[2];
+};
+const fmtTime = sec => {
+  if (!(sec > 0)) return "";
+  sec = Math.round(sec); const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60;
+  return h ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
+};
+const fmtPace = (sec, mi) => sec > 0 && mi > 0 ? fmtTime(sec / mi) + " /mi" : "";
 
 /* ---------- storage (Firebase live, or this-device demo) ---------- */
 const Store = (() => {
@@ -411,20 +517,30 @@ const Store = (() => {
 /* ---------- stats per runner ---------- */
 function statsFor(id, r, logs) {
   const L = logs[id] || {}, t = today();
-  const full = d => counts(L[d]);
+  const full = d => counts(L[d]), sick = d => isSick(L[d]);
   const end = addDays(r.start, CONFIG.totalDays - 1);
-  const keys = Object.keys(L).filter(d => d >= r.start && d <= end);
+  const keys = Object.keys(L).filter(d => d >= r.start && d <= end && d <= t);
   const done = keys.filter(full).length;
+  const sickDays = keys.filter(sick).length;
   const miles = keys.reduce((a,d) => a + milesOf(L[d]), 0);
   const rawDay = diff(r.start, t) + 1;
   const dayN = Math.min(CONFIG.totalDays, Math.max(0, rawDay));
-  let streak = 0, d = full(t) ? t : addDays(t,-1);
-  while (full(d)) { streak++; d = addDays(d,-1); }
-  // miles bank: miles run vs. miles owed so far (today only owed once you log it)
-  const owedDays = rawDay > CONFIG.totalDays ? CONFIG.totalDays
-    : Math.max(0, dayN - 1) + (milesOf(L[t]) > 0 || full(t) ? 1 : 0);
-  const bank = Math.round((miles - owedDays * CONFIG.dailyMiles) * 100) / 100;
-  return { L, count: keys.length, done, miles, dayN, streak, bank, ranToday: full(t), missed: Math.max(0, dayN - done - (full(t)?0:1)) };
+  // streak: counted days in a row; sick days are skipped over, not counted, not breaking it
+  let streak = 0, d = full(t) || sick(t) ? t : addDays(t,-1);
+  while (d >= r.start) { if (full(d)) streak++; else if (!sick(d)) break; d = addDays(d,-1); }
+  // miles bank: miles run vs. miles owed so far (sick days owe nothing; today only once logged)
+  const sickBefore = sickDays - (sick(t) ? 1 : 0);
+  const owedDays = rawDay > CONFIG.totalDays ? CONFIG.totalDays - sickDays
+    : Math.max(0, dayN - 1) - sickBefore + ((milesOf(L[t]) > 0 || full(t)) && !sick(t) ? 1 : 0);
+  const bank = Math.round((miles - Math.max(0, owedDays) * CONFIG.dailyMiles) * 100) / 100;
+  // pace: runs that have a time
+  const timed = keys.filter(k => L[k] && L[k].d > 0 && milesOf(L[k]) > 0).sort()
+    .map(k => ({ d:k, m:milesOf(L[k]), sec:L[k].d, pace:L[k].d / milesOf(L[k]) }));
+  const tSec = timed.reduce((a,x) => a + x.sec, 0), tMi = timed.reduce((a,x) => a + x.m, 0);
+  const avgPace = tMi ? tSec / tMi : 0, bestPace = timed.length ? Math.min(...timed.map(x => x.pace)) : 0;
+  const settled = full(t) || sick(t);
+  return { L, keys, count: keys.length, done, sickDays, miles, dayN, streak, bank, timed, tSec, avgPace, bestPace,
+    ranToday: settled, missed: Math.max(0, dayN - done - sickDays - (settled ? 0 : 1)) };
 }
 
 /* ---------- render ---------- */
@@ -442,10 +558,11 @@ function yearGrid(r, s) {
   const t = today(); let out = "";
   for (let i = 0; i < CONFIG.totalDays; i++) {
     const d = addDays(r.start, i);
-    const v = s.L[d], m = milesOf(v), ok = counts(v);
-    let cls = d > t ? "future" : ok ? (v.x && isShort(m) ? "done ok" : "done") : m > 0 ? "part" : d < t ? "miss" : "";
+    const v = s.L[d], m = milesOf(v), ok = counts(v), sk = isSick(v);
+    let cls = d > t ? "future" : ok ? (v.x && isShort(m) ? "done ok" : "done") : sk ? "sick" : m > 0 ? "part" : d < t ? "miss" : "";
     if (d === t) cls += " now";
-    const tip = nice(d) + (m ? ` · ${m} mi` : "") + (ok && isShort(m) ? " · counted" : "") + (v && v.n ? ` · “${v.n}”` : "");
+    const tip = nice(d) + (m ? ` · ${m} mi` : "") + (v && v.d ? ` · ${fmtTime(v.d)}` : "") + (ok && isShort(m) ? " · counted" : "")
+      + (sk ? " · sick day" : "") + (v && v.n ? ` · “${v.n}”` : "");
     out += `<i class="${cls}" data-d="${d}" title="${esc(tip)}"></i>`;
   }
   return out;
@@ -488,15 +605,15 @@ function render(data) {
   const next = JOURNEY.find(([d]) => d > miles) || JOURNEY[JOURNEY.length-1];
   const prevD = (JOURNEY[JOURNEY.indexOf(next)-1] || [0])[0];
   const reached = JOURNEY.filter(([d]) => d <= miles).pop();
-  $("jText").textContent = (reached ? `Together you've run ${reached[1]}. ` : "") +
+  $("jText").textContent = (reached ? `Together you've covered ${reached[1]}. ` : "") +
     `Next: ${next[1]} — ${Math.max(0, next[0]-miles).toFixed(1)} mi to go`;
   $("jBar").style.width = Math.min(100, (miles-prevD)/(next[0]-prevD)*100) + "%";
 
   // runner cards
   $("runners").innerHTML = all.length ? all.map(({id,r,s}) => { const mine = canEdit(id); return `
     <article class="card${Store.live && mine ? " mine" : ""}" style="--c:${r.color}">
-      ${mine ? `<button class="x" data-remove="${id}" title="Remove runner" aria-label="Remove ${esc(r.name)}">×</button>` : ""}
-      <div class="card-top">
+      ${mine ? `<button class="x" data-remove="${id}" title="Leave the challenge" aria-label="Remove ${esc(r.name)}">×</button>` : ""}
+      <div class="card-top" data-view="${id}" title="Open ${esc(r.name)}'s log">
         <div class="ring">${ring(s.done/CONFIG.totalDays, r.color)}
           <div class="num"><div><b>${s.done}</b><small>/ ${CONFIG.totalDays}</small></div></div></div>
         <div class="who">
@@ -508,24 +625,27 @@ function render(data) {
               : s.bank < -0.049 ? `<span class="chip">${(-s.bank).toFixed(1)} mi to make up</span>`
               : `<span class="chip good">On pace ✓</span>`}
             ${s.missed ? `<span class="chip">${s.missed} day${s.missed > 1 ? "s" : ""} missed</span>` : ""}
+            ${s.sickDays ? `<span class="chip">🤒 ${s.sickDays} sick</span>` : ""}
+            ${s.avgPace ? `<span class="chip">⏱ ${fmtPace(s.avgPace, 1)}</span>` : ""}
           </div>
         </div>
       </div>
       <div class="grid" data-g="${id}">${yearGrid(r,s)}</div>
       ${mine ? `<div class="actions">
         <button class="btn ${s.ranToday ? "doneToday" : ""}" data-today="${id}">
-          ${s.ranToday ? "✓ Done today" : `Log today's ${CONFIG.dailyMiles}`}</button>
-        <button class="btn ghost" data-hist="${id}">Past runs</button>
-      </div>` : !r.uid && !Store.me ? `<div class="actions">
-        <button class="btn ghost" style="flex:1" data-claim="${esc(r.name)}">This is me: set a password</button>
-      </div>` : ""}
+          ${isSick(s.L[t]) ? "🤒 Sick today" : s.ranToday ? "✓ Done today" : `Log today's ${CONFIG.dailyMiles}`}</button>
+        <button class="btn ghost" data-hist="${id}">Past days</button>
+      </div>` : `<div class="actions">
+        <button class="btn ghost" style="flex:1" data-view="${id}">View log</button>
+        ${!r.uid && !Store.me ? `<button class="btn ghost" style="flex:1" data-claim="${esc(r.name)}">This is me</button>` : ""}
+      </div>`}
     </article>`; }).join("")
-    : `<p class="empty">No runners yet. Add yourself below 👇</p>`;
+    : `<p class="empty">Nobody's joined yet. Add yourself below 👇</p>`;
 
   // leaderboard
   const ranked = [...all].sort((a,b) => b.s.done - a.s.done || b.s.miles - a.s.miles);
   $("lb").innerHTML = ranked.length ? ranked.map((x,i) => `
-    <li><span class="rank">${["🥇","🥈","🥉"][i] || i+1}</span>
+    <li data-view="${x.id}" title="Open ${esc(x.r.name)}'s log"><span class="rank">${["🥇","🥈","🥉"][i] || i+1}</span>
       <span class="nm">${esc(x.r.name)}</span>
       <span class="v">${x.s.done} days · ${x.s.miles.toFixed(1)} mi · ${x.s.streak}🔥</span></li>`).join("")
     : `<li class="empty">Nobody yet.</li>`;
@@ -535,17 +655,94 @@ function render(data) {
   const groups = {};
   all.forEach(({id,r,s}) => Object.entries(s.L).forEach(([d,v]) => {
     const tt = (v&&v.t)||0, k = id + "|" + tt;
-    (groups[k] ||= { name:r.name, t:tt, items:[] }).items.push({ d, m:milesOf(v), n:v && v.n, x:counts(v) && isShort(milesOf(v)) });
+    (groups[k] ||= { name:r.name, t:tt, items:[] }).items.push({ d, m:milesOf(v), n:v && v.n, x:counts(v) && isShort(milesOf(v)), s:isSick(v), sec:v && v.d });
   }));
   const feed = Object.values(groups).sort((a,b) => b.t - a.t);
   $("feed").innerHTML = feed.length ? feed.slice(0,8).map(g => {
     if (g.items.length === 1) { const f = g.items[0], when = f.d === t ? " today" : ` on ${nice(f.d)}`;
-      const what = f.m > 0 ? `ran ${f.m} mi${f.x ? " (counted)" : ""}${when}` : f.x ? `took a counted rest day${when}` : `left a note${when}`;
+      const what = f.s ? `took a sick day 🤒${when}` : f.m > 0 ? `did ${f.m} mi${f.sec ? ` in ${fmtTime(f.sec)}` : ""}${f.x ? " (counted)" : ""}${when}`
+        : f.x ? `took a counted rest day${when}` : `left a note${when}`;
       return `<li><b>${esc(g.name)}</b> ${what}${f.n ? ` · “${esc(f.n)}”` : ""}</li>`; }
     const tot = g.items.reduce((a,f) => a + f.m, 0);
-    return `<li><b>${esc(g.name)}</b> logged ${g.items.length} runs (${tot.toFixed(1)} mi)</li>`;
-  }).join("") : `<li>No runs yet — be the first.</li>`;
+    return `<li><b>${esc(g.name)}</b> logged ${g.items.length} days (${tot.toFixed(1)} mi)</li>`;
+  }).join("") : `<li>Nothing logged yet. Be the first.</li>`;
+
+  if (viewing && $("viewDlg").open) drawView();
 }
+
+/* ---------- view-only runner page ---------- */
+let viewing = null;
+function openView(id) {
+  if (!lastData.runners[id]) return;
+  viewing = id;
+  if (!$("viewDlg").open) $("viewDlg").showModal();
+  drawView();
+  $("viewDlg").scrollTop = 0;
+}
+function paceChart(timed, color) {
+  if (timed.length < 2) return `<p class="empty">${timed.length ? "One timed day so far. Add times to a few more to see the trend." : "No times logged yet. Add a time to any day to track pace."}</p>`;
+  // draw at the on-screen width so labels stay readable on phones
+  const W = Math.max(280, Math.round(($("viewBody").clientWidth || 600) - 36)), H = 180, L = 48, R = 12, T = 16, B = 26;
+  const t0 = parse(timed[0].d), span = Math.max(1, diff(timed[0].d, timed[timed.length-1].d));
+  const ps = timed.map(x => x.pace), lo = Math.min(...ps), hi = Math.max(...ps), pad2 = Math.max(5, (hi - lo) * 0.12);
+  const yMin = lo - pad2, yMax = hi + pad2;
+  const X = d => L + (diff(timed[0].d, d) / span) * (W - L - R);
+  const Y = p => T + (p - yMin) / (yMax - yMin) * (H - T - B);   // faster (lower) pace is higher up
+  const pts = timed.map(x => [X(x.d), Y(x.pace)]);
+  const avg = timed.reduce((a,x) => a + x.sec, 0) / timed.reduce((a,x) => a + x.m, 0);
+  return `<svg class="pace" viewBox="0 0 ${W} ${H}" role="img" aria-label="Pace per day over time">
+    <line x1="${L}" x2="${W-R}" y1="${Y(avg)}" y2="${Y(avg)}" class="avg"/>
+    <text x="${W-R}" y="${Y(avg)-5}" text-anchor="end" class="lbl">avg ${fmtTime(avg)}</text>
+    <text x="${L-8}" y="${Y(lo)+4}" text-anchor="end" class="lbl">${fmtTime(lo)}</text>
+    <text x="${L-8}" y="${Y(hi)+4}" text-anchor="end" class="lbl">${fmtTime(hi)}</text>
+    <text x="${L}" y="${H-6}" class="lbl">${nice(timed[0].d)}</text>
+    <text x="${W-R}" y="${H-6}" text-anchor="end" class="lbl">${nice(timed[timed.length-1].d)}</text>
+    <polyline points="${pts.map(p => p.join(",")).join(" ")}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    ${pts.map((p,i) => `<circle cx="${p[0]}" cy="${p[1]}" r="3.5" fill="${color}"><title>${nice(timed[i].d)} · ${fmtPace(timed[i].sec, timed[i].m)} · ${timed[i].m} mi</title></circle>`).join("")}
+  </svg><p class="axis-note">min per mile · higher = faster</p>`;
+}
+function drawView() {
+  const id = viewing, r = lastData.runners[id]; if (!r) { $("viewDlg").close(); return; }
+  const s = statsFor(id, r, lastData.logs), mine = canEdit(id), t = today();
+  $("viewTitle").innerHTML = `<span class="dot" style="background:${r.color}"></span>${esc(r.name)}`;
+  const tile = (label, val) => `<div class="vt"><small>${label}</small><b>${val}</b></div>`;
+  const bankTxt = s.bank > 0.049 ? `+${s.bank.toFixed(1)} mi` : s.bank < -0.049 ? `−${(-s.bank).toFixed(1)} mi` : "Even";
+  const days = [...s.keys].sort().reverse();
+  const log = days.map(d => {
+    const v = s.L[d], m = milesOf(v), sk = isSick(v), ok = counts(v);
+    const bits = [];
+    if (v.d) bits.push(fmtTime(v.d), fmtPace(v.d, m));
+    if (sk) bits.push(`<span class="tag sick">Sick day</span>`);
+    else if (ok && isShort(m)) bits.push(`<span class="tag">Counted</span>`);
+    else if (!ok) bits.push(`<span class="tag miss">Short</span>`);
+    if (v.n) bits.push(`<i>“${esc(v.n)}”</i>`);
+    return `<li><div class="l1"><span>${parse(d).toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}
+      <small>Day ${diff(r.start, d) + 1}</small></span><b>${sk && !m ? "🤒" : m + " mi"}</b></div>
+      ${bits.length ? `<div class="l2">${bits.join(" · ")}</div>` : ""}</li>`;
+  }).join("");
+  $("viewBody").innerHTML = `
+    <p class="vmeta">${s.dayN ? `Day ${s.dayN} of ${CONFIG.totalDays}` : `Starts ${nice(r.start)}`} · started ${nice(r.start)}${mine ? "" : " · view only"}</p>
+    <div class="vstats" style="--c:${r.color}">
+      ${tile("Days done", `${s.done}<span>/${CONFIG.totalDays}</span>`)}
+      ${tile("Miles", s.miles.toFixed(1))}
+      ${tile("Streak", s.streak + "🔥")}
+      ${tile("Miles bank", bankTxt)}
+      ${tile("Avg pace", s.avgPace ? fmtTime(s.avgPace) : "—")}
+      ${tile("Best pace", s.bestPace ? fmtTime(s.bestPace) : "—")}
+      ${tile("Time moving", s.tSec ? fmtTime(s.tSec) : "—")}
+      ${tile("Sick days", s.sickDays)}
+    </div>
+    <div class="grid vgrid" data-g="${id}" style="--c:${r.color}">${yearGrid(r, s)}</div>
+    <div class="legend"><span><i class="done" style="--c:${r.color}"></i>Done</span><span><i class="done ok" style="--c:${r.color}"></i>Counted</span><span><i class="sick"></i>Sick</span><span><i class="part" style="--c:${r.color}"></i>Short</span><span><i class="miss"></i>Missed</span></div>
+    <h4>Pace</h4>
+    ${paceChart(s.timed, r.color)}
+    <h4>Daily log</h4>
+    ${log ? `<ul class="vlog">${log}</ul>` : `<p class="empty">Nothing logged yet.</p>`}
+    ${mine ? `<div class="actions" style="margin-top:14px"><button class="btn" data-hist="${id}">Edit past days</button></div>` : ""}`;
+}
+$("viewClose").onclick = () => { $("viewDlg").close(); viewing = null; };
+$("viewDlg").addEventListener("click", e => { if (e.target === $("viewDlg")) { $("viewDlg").close(); viewing = null; } });
+$("viewDlg").addEventListener("close", () => { viewing = null; });
 
 /* ---------- spotify ---------- */
 (function () {
@@ -605,28 +802,48 @@ function openSingle(id, date) {
 function fillSingle() {
   const v = editing && (lastData.logs[editing] || {})[$("logDate").value];
   $("logMiles").value = v ? (milesOf(v) || "") : CONFIG.dailyMiles;
+  $("logTime").value = v && v.d ? fmtTime(v.d) : "";
   $("logNote").value = (v && v.n) || "";
-  $("logX").checked = !!(v && v.x);
+  const k = kindOf(v);
+  document.querySelectorAll('input[name=logK]').forEach(i => i.checked = i.value === k);
   syncX();
 }
-function syncX() { $("logXWrap").hidden = !isShort(parseFloat($("logMiles").value) || 0); }
+const K_HELP = { "": "Doesn't count toward your 365. Breaks your streak.",
+  x: "Counts toward your 365 and your streak. Make up the miles on other days.",
+  s: "Doesn't add a day, but keeps your streak alive and costs no miles. Feel better!" };
+function logK() { const i = document.querySelector('input[name=logK]:checked'); return i ? i.value : ""; }
+function syncX() {
+  const m = parseFloat($("logMiles").value) || 0;
+  $("logKWrap").hidden = !isShort(m);
+  $("logKHelp").textContent = K_HELP[logK()];
+  const sec = parseTime($("logTime").value);
+  $("logPace").textContent = isNaN(sec) ? "Time looks off. Use mm:ss or h:mm:ss." : sec > 0 && m > 0 ? `Pace: ${fmtPace(sec, m)}` : "";
+}
 $("logMiles").addEventListener("input", syncX);
+$("logTime").addEventListener("input", syncX);
+document.querySelectorAll('input[name=logK]').forEach(i => i.addEventListener("change", syncX));
 
 /* ---------- past runs (backfill) ---------- */
 let hist = null;
 const fullMi = v => !isShort(parseFloat(v) || 0);
+const blankRow = () => ({ m:"", n:"", k:"", tm:"" });
 function rowState(row, v) {
-  const short = isShort(parseFloat(v.m) || 0);
-  row.classList.toggle("full", !short || !!v.x);
-  row.classList.toggle("ok", short && !!v.x);
-  row.querySelector(".more").classList.toggle("on", !!(v.n || (short && v.x)));
-  row.querySelector(".np").textContent = v.n || "";
+  const short = isShort(parseFloat(v.m) || 0), k = short ? v.k : "";
+  row.classList.toggle("full", !short || k === "x");
+  row.classList.toggle("ok", k === "x");
+  row.classList.toggle("sick", k === "s");
+  row.querySelector(".more").classList.toggle("on", !!(v.n || k));
+  row.querySelector("[data-hk]").disabled = !short;
+  const tag = k === "s" ? "🤒 sick day" : k === "x" ? "counted" : "";
+  row.querySelector(".np").textContent = [tag, v.n].filter(Boolean).join(" · ");
+  const sec = parseTime(v.tm);
+  row.querySelector("[data-ht]").style.borderColor = isNaN(sec) ? "var(--warm)" : "";
 }
 function openHistory(id) {
   const r = lastData.runners[id], L = lastData.logs[id] || {};
   hist = { id, vals:{} };
-  for (const [d,v] of Object.entries(L)) hist.vals[d] = { m: milesOf(v) ? String(milesOf(v)) : "", n: (v && v.n) || "", x: !!(v && v.x) };
-  $("histTitle").textContent = `Past runs · ${r.name}`;
+  for (const [d,v] of Object.entries(L)) hist.vals[d] = { m: milesOf(v) ? String(milesOf(v)) : "", n: (v && v.n) || "", k: kindOf(v), tm: v && v.d ? fmtTime(v.d) : "" };
+  $("histTitle").textContent = `Past days · ${r.name}`;
   $("histStart").value = r.start; $("histStart").max = today();
   syncDayN(); drawHist();
   $("histDlg").showModal();
@@ -637,16 +854,21 @@ function drawHist() {
   const s = $("histStart").value, t = today();
   if (!s || s > t) { $("histList").innerHTML = `<p class="empty">Pick a Day 1 on or before today.</p>`; return; }
   const n = Math.min(CONFIG.totalDays, diff(s,t) + 1);
-  let out = "";
+  let out = `<div class="colhead"><span>Miles</span><span>Time</span></div>`;
   for (let i = n - 1; i >= 0; i--) {
-    const d = addDays(s,i), v = hist.vals[d] || { m:"", n:"", x:false };
+    const d = addDays(s,i), v = hist.vals[d] || blankRow();
     out += `<div class="hrow" data-row="${d}"><span class="dn">Day ${i+1}</span>
-      <span class="dd">${parse(d).toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}${d === t ? " · today" : ""}<span class="np"></span></span>
-      <input type="number" inputmode="decimal" step="0.01" min="0" placeholder="—" data-hd="${d}" value="${esc(v.m)}" aria-label="Miles on ${nice(d)}">
-      <button type="button" class="more" data-more aria-label="Note or count it for ${nice(d)}">✎</button>
+      <span class="dd">${d === t ? "Today" : parse(d).toLocaleDateString(undefined,{weekday:"short",day:"numeric"})}<span class="np"></span></span>
+      <input class="mi" type="number" inputmode="decimal" step="0.01" min="0" placeholder="—" data-hd="${d}" value="${esc(v.m)}" aria-label="Miles on ${nice(d)}">
+      <input class="tm" type="text" placeholder="mm:ss" data-ht value="${esc(v.tm)}" autocomplete="off" aria-label="Time on ${nice(d)}">
+      <button type="button" class="more" data-more aria-label="Note or sick day for ${nice(d)}">✎</button>
       <div class="hx" hidden>
         <input type="text" maxlength="280" placeholder="Note for this day" data-hn value="${esc(v.n)}">
-        <label class="check"><input type="checkbox" data-hx ${v.x ? "checked" : ""}> Count it anyway</label>
+        <select data-hk aria-label="If short of ${CONFIG.dailyMiles} mi">
+          <option value="" ${!v.k ? "selected" : ""}>If short: missed</option>
+          <option value="x" ${v.k === "x" ? "selected" : ""}>Count it anyway</option>
+          <option value="s" ${v.k === "s" ? "selected" : ""}>🤒 Sick day</option>
+        </select>
       </div></div>`;
   }
   $("histList").innerHTML = out;
@@ -654,12 +876,14 @@ function drawHist() {
 }
 $("histList").addEventListener("input", e => {
   const row = e.target.closest(".hrow"); if (!row) return;
-  const d = row.dataset.row, v = (hist.vals[d] ||= { m:"", n:"", x:false });
+  const d = row.dataset.row, v = (hist.vals[d] ||= blankRow());
   if ("hd" in e.target.dataset) v.m = e.target.value;
+  if ("ht" in e.target.dataset) v.tm = e.target.value;
   if ("hn" in e.target.dataset) v.n = e.target.value;
-  if ("hx" in e.target.dataset) v.x = e.target.checked;
+  if ("hk" in e.target.dataset) v.k = e.target.value;
   rowState(row, v);
 });
+$("histList").addEventListener("change", e => { if ("hk" in e.target.dataset) e.target.dispatchEvent(new Event("input", { bubbles:true })); });
 $("histList").addEventListener("click", e => {
   const b = e.target.closest("[data-more]"); if (!b) return;
   const hx = b.parentElement.querySelector(".hx"); hx.hidden = !hx.hidden;
@@ -672,8 +896,8 @@ $("histDayN").addEventListener("input", () => {
 });
 $("histFill").onclick = () => {
   $("histList").querySelectorAll("input[data-hd]").forEach(inp => {
-    const row = inp.closest(".hrow"), v = (hist.vals[row.dataset.row] ||= { m:"", n:"", x:false });
-    if (!inp.value && !v.x) { inp.value = CONFIG.dailyMiles; v.m = String(CONFIG.dailyMiles); rowState(row, v); }
+    const row = inp.closest(".hrow"), v = (hist.vals[row.dataset.row] ||= blankRow());
+    if (!inp.value && !v.k) { inp.value = CONFIG.dailyMiles; v.m = String(CONFIG.dailyMiles); rowState(row, v); }
   });
 };
 $("histCancel").onclick = () => $("histDlg").close();
@@ -686,11 +910,12 @@ $("histForm").addEventListener("submit", () => {
   for (let i = 0; i < n; i++) {
     const d = addDays(s,i), v = hist.vals[d] || {}, p = old[d];
     const raw = parseFloat(v.m), m = raw > 0 ? Math.round(raw * 100) / 100 : 0;
-    const n = (v.n || "").trim(), x = !!v.x && isShort(m);
-    const exists = m > 0 || !!n || x;
+    const n = (v.n || "").trim(), k = isShort(m) ? (v.k || "") : "";
+    const sec = m > 0 ? Math.round(parseTime(v.tm) || 0) : 0;
+    const exists = m > 0 || !!n || !!k;
     if (!exists) { if (p) patch[d] = null; continue; }
-    const same = p && milesOf(p) === m && (p.n || "") === n && !!p.x === x;
-    if (!same) { patch[d] = entry(m, n, x); patch[d].t = now; if (counts(patch[d]) && !counts(p)) added++; }
+    const same = p && milesOf(p) === m && (p.n || "") === n && kindOf(p) === k && (p.d || 0) === sec;
+    if (!same) { patch[d] = entry(m, n, k, sec); patch[d].t = now; if (counts(patch[d]) && !counts(p)) added++; }
   }
   guard(Store.saveHistory(id, s, patch));
   if (added) confetti(lastData.runners[id].color);
@@ -698,7 +923,13 @@ $("histForm").addEventListener("submit", () => {
 
 document.addEventListener("click", e => {
   const dot = e.target.closest(".grid i[data-d]");
-  if (dot && !dot.classList.contains("future") && canEdit(dot.parentElement.dataset.g)) { openSingle(dot.parentElement.dataset.g, dot.dataset.d); return; }
+  if (dot) {
+    const g = dot.parentElement.dataset.g;
+    if (!dot.classList.contains("future") && canEdit(g)) { openSingle(g, dot.dataset.d); return; }
+    if (!dot.closest("#viewDlg")) { openView(g); return; }
+  }
+  const v = e.target.closest("[data-view]");
+  if (v) { openView(v.dataset.view); return; }
   const b = e.target.closest("button"); if (!b) return;
   const d = lastData;
   if (b.hasAttribute("data-signin")) { $("authErr").textContent = ""; $("authDlg").showModal(); return; }
@@ -706,20 +937,21 @@ document.addEventListener("click", e => {
   if (b.dataset.claim) {
     $("addName").value = b.dataset.claim; $("addErr").textContent = "";
     $("joinSec").scrollIntoView({ behavior:"smooth", block:"center" }); $("addPw").focus();
-    toast(`Choose a password for ${b.dataset.claim}. Your runs come with you.`);
+    toast(`Choose a password for ${b.dataset.claim}. Your logged days come with you.`);
     return;
   }
   if (b.dataset.today && canEdit(b.dataset.today)) {
     const id = b.dataset.today, r = d.runners[id], s = statsFor(id, r, d.logs);
-    if (s.ranToday) { if (confirm(`Undo ${r.name}'s run for today?`)) guard(Store.removeLog(id, today())); return; }
+    if (isSick(s.L[today()])) { openSingle(id, today()); return; }
+    if (s.ranToday) { if (confirm(`Undo ${r.name}'s miles for today?`)) guard(Store.removeLog(id, today())); return; }
     const prev = s.L[today()];
-    guard(Store.setLog(id, today(), entry(Math.max(CONFIG.dailyMiles, milesOf(prev)), prev && prev.n)));
+    guard(Store.setLog(id, today(), entry(Math.max(CONFIG.dailyMiles, milesOf(prev)), prev && prev.n, "", prev && milesOf(prev) >= CONFIG.dailyMiles - 1e-9 ? prev.d : 0)));
     confetti(r.color);
   }
   if (b.dataset.hist && canEdit(b.dataset.hist)) openHistory(b.dataset.hist);
   if (b.dataset.remove && canEdit(b.dataset.remove)) {
     const r = d.runners[b.dataset.remove];
-    if (confirm(`Remove ${r.name} and all their runs? This can't be undone.`)) guard(Store.removeRunner(b.dataset.remove));
+    if (confirm(`Remove ${r.name} and everything they've logged? This can't be undone.`)) guard(Store.removeRunner(b.dataset.remove));
   }
 });
 
@@ -736,10 +968,11 @@ $("authForm").addEventListener("submit", async e => {
 $("logDate").addEventListener("change", fillSingle);
 $("logForm").addEventListener("submit", () => {
   if (!editing) return;
-  const d = $("logDate").value, m = parseFloat($("logMiles").value) || 0, n = $("logNote").value.trim(), x = $("logX").checked;
+  const d = $("logDate").value, m = parseFloat($("logMiles").value) || 0, n = $("logNote").value.trim();
+  const k = isShort(m) ? logK() : "", sec = parseTime($("logTime").value) || 0;
   const prev = (lastData.logs[editing] || {})[d];
-  if (!(m > 0) && !n && !(x && isShort(m))) { if (prev) guard(Store.removeLog(editing, d)); return; }
-  const e = entry(m, n, x);
+  if (!(m > 0) && !n && !k) { if (prev) guard(Store.removeLog(editing, d)); return; }
+  const e = entry(m, n, k, sec);
   guard(Store.setLog(editing, d, e));
   if (counts(e) && !counts(prev)) confetti(lastData.runners[editing].color);
 });
@@ -762,7 +995,7 @@ $("addForm").addEventListener("submit", async e => {
   try {
     await Store.signUp(name, $("addPw").value, start);
     $("addName").value = ""; $("addPw").value = "";
-    toast(`Welcome, ${name}! Tap "Past runs" to fill in your history.`);
+    toast(`Welcome, ${name}! Tap "Past days" to fill in your history.`);
   } catch (err) { $("addErr").textContent = authMsg(err); }
   btn.disabled = false;
 });
