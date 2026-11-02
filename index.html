@@ -56,7 +56,7 @@ button{cursor:pointer;border:0;background:none}
 .ring{width:84px;height:84px;flex:none;position:relative}
 .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ring .num{position:absolute;inset:0;display:grid;place-items:center;text-align:center;line-height:1}
-.ring .num b{font-family:"Archivo Black";font-size:22px;display:block}
+.ring .num b{font-family:"Archivo Black",Inter,sans-serif;font-size:22px;display:block}
 .ring .num small{font-size:10px;color:var(--muted)}
 .who h3{font-size:18px;display:flex;align-items:center;gap:8px}
 .who .dot{width:10px;height:10px;border-radius:50%}
@@ -214,6 +214,47 @@ svg.pace .avg{stroke:var(--muted);stroke-dasharray:4 4;stroke-width:1}
 .tag{font-size:11px;font-weight:800;border-radius:6px;padding:1px 6px;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--text)}
 .tag.sick{background:color-mix(in srgb,var(--sick) 25%,transparent)}
 .tag.miss{background:color-mix(in srgb,var(--warm) 20%,transparent)}
+
+/* front card: just the essentials */
+.ring .num small{font-size:9px;text-transform:uppercase;letter-spacing:.04em}
+.chip.more-link{background:none;color:var(--muted);padding-left:2px}
+.card-top:hover .more-link{color:var(--text)}
+
+/* streak graphic (personal page) */
+.streakbox{display:flex;gap:16px;align-items:center;background:var(--panel2);border-radius:14px;padding:14px;margin-bottom:10px;flex-wrap:wrap}
+.sbig{display:flex;align-items:center;gap:8px}
+.sbig .flame{font-size:40px;line-height:1}
+.sbig b{font-family:"Archivo Black",Inter,sans-serif;font-weight:400;font-size:40px;line-height:1;display:block}
+.sbig small{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.sright{flex:1;min-width:230px}
+.strip{display:grid;grid-template-columns:repeat(14,1fr);gap:3px}
+.sd{display:flex;flex-direction:column;align-items:center;gap:3px}
+.sd i{width:100%;aspect-ratio:1;border-radius:6px;display:grid;place-items:center;font-style:normal;font-size:11px;background:var(--panel)}
+.sd.done i{background:color-mix(in srgb,var(--c) 70%,var(--panel))}
+.sd.sick i{background:color-mix(in srgb,var(--sick) 45%,var(--panel))}
+.sd.miss i{background:color-mix(in srgb,var(--warm) 22%,var(--panel))}
+.sd.tdy i{outline:1.5px dashed var(--muted);outline-offset:-2px}
+.sd.pre i{opacity:.35}
+.sd span{font-size:10px;color:var(--muted)}
+.sright p{font-size:13px;color:var(--muted);margin-top:8px}
+.sright p b{color:var(--text)}
+.sright .snote{font-size:11px;margin-top:2px}
+
+/* message board */
+.side{display:flex;flex-direction:column;gap:14px;min-width:0}
+#msgForm textarea{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;color:inherit;resize:vertical;min-height:56px}
+#msgForm[hidden]{display:none}
+.mrow{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.mrow small{color:var(--muted);font-size:12px}
+.mrow .btn{flex:none;padding:8px 18px}
+.msgs{list-style:none;margin-top:12px;max-height:380px;overflow:auto}
+.msgs li{padding:10px 0;border-top:1px solid var(--line)}
+.mh{display:flex;align-items:center;gap:6px;font-size:13px}
+.mh .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.mh time{color:var(--muted);font-size:12px}
+.mh .mdel{margin-left:auto;color:var(--muted);font-size:16px;opacity:.6;padding:0 4px}
+.mh .mdel:hover{opacity:1}
+.msgs p{white-space:pre-wrap;overflow-wrap:anywhere;margin-top:3px;font-size:14px}
 .quote{text-align:center;color:var(--muted);font-style:italic;margin-top:36px;font-size:14px}
 canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 </style>
@@ -237,7 +278,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
     <div class="stat"><small>Crew miles</small><div class="big" id="sMiles">0</div></div>
     <div class="stat"><small>Days logged</small><div class="big" id="sRuns">0</div></div>
     <div class="stat"><small>Done today</small><div class="big" id="sToday">0/0</div></div>
-    <div class="stat"><small>Best streak now</small><div class="big" id="sStreak">0</div></div>
+    <div class="stat"><small>Crew days done</small><div class="big" id="sDays">0</div></div>
     <div class="stat journey">
       <small>Crew journey</small>
       <div id="jText" style="font-weight:700;margin-top:4px"></div>
@@ -267,9 +308,20 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
       <h2 style="font-size:20px;margin:18px 0 4px">Latest activity</h2>
       <ul class="feed" id="feed"></ul>
     </div>
-    <div class="panel spotify">
-      <h2 style="font-size:20px;margin-bottom:10px">The playlist</h2>
-      <div id="spotify"></div>
+    <div class="side">
+      <div class="panel board">
+        <h2 style="font-size:20px;margin-bottom:10px">Message board</h2>
+        <form id="msgForm">
+          <textarea id="msgText" rows="2" maxlength="280" placeholder="Something motivational (or funny) for the crew…" aria-label="New message"></textarea>
+          <div class="mrow"><small id="msgCount">280</small><button class="btn" id="msgGo">Post</button></div>
+        </form>
+        <p class="empty" id="msgSignin" hidden>Sign in to post a message.</p>
+        <ul class="msgs" id="msgs"></ul>
+      </div>
+      <div class="panel spotify">
+        <h2 style="font-size:20px;margin-bottom:10px">The playlist</h2>
+        <div id="spotify"></div>
+      </div>
     </div>
   </div>
 
@@ -439,7 +491,7 @@ const fmtPace = (sec, mi) => sec > 0 && mi > 0 ? fmtTime(sec / mi) + " /mi" : ""
 const Store = (() => {
   let data = { runners:{}, logs:{} }, subs = [];
   const emit = () => subs.forEach(f => f(data));
-  const norm = v => ({ runners:(v&&v.runners)||{}, logs:(v&&v.logs)||{} });
+  const norm = v => ({ runners:(v&&v.runners)||{}, logs:(v&&v.logs)||{}, messages:(v&&v.messages)||{} });
 
   if (CONFIG.firebase && window.firebase) {
     firebase.initializeApp(CONFIG.firebase);
@@ -479,6 +531,8 @@ const Store = (() => {
         if (!data.runners[c.user.uid]) await claim(c.user.uid, name, today());
       },
       signOut(){ return auth.signOut(); },
+      postMessage(text){ return db.ref("messages").push({ uid: api.me, text, t: Date.now() }); },
+      deleteMessage(id){ return db.ref("messages/" + id).remove(); },
       async removeRunner(id){
         await db.ref().update({["runners/"+id]:null,["logs/"+id]:null});
         try { await auth.currentUser.delete(); } catch(e) { await auth.signOut(); }
@@ -501,6 +555,8 @@ const Store = (() => {
   return {
     live:false, me:null, ready:true,
     subscribe(f){ subs.push(f); f(data); },
+    postMessage(text){ data.messages["m" + Date.now()] = { uid:"local", text, t:Date.now() }; save(); },
+    deleteMessage(id){ delete data.messages[id]; save(); },
     addRunner(r){ data.runners["r"+Date.now()] = r; save(); },
     removeRunner(id){ delete data.runners[id]; delete data.logs[id]; save(); },
     setLog(id,date,e){ (data.logs[id] ||= {})[date] = e; save(); },
@@ -528,6 +584,13 @@ function statsFor(id, r, logs) {
   // streak: counted days in a row; sick days are skipped over, not counted, not breaking it
   let streak = 0, d = full(t) || sick(t) ? t : addDays(t,-1);
   while (d >= r.start) { if (full(d)) streak++; else if (!sick(d)) break; d = addDays(d,-1); }
+  // longest streak so far (today not done yet doesn't reset it)
+  let bestStreak = 0, cur = 0;
+  for (let i = 0; i < Math.min(dayN, CONFIG.totalDays); i++) {
+    const day = addDays(r.start, i);
+    if (full(day)) bestStreak = Math.max(bestStreak, ++cur);
+    else if (!sick(day) && day < t) cur = 0;
+  }
   // miles bank: miles run vs. miles owed so far (sick days owe nothing; today only once logged)
   const sickBefore = sickDays - (sick(t) ? 1 : 0);
   const owedDays = rawDay > CONFIG.totalDays ? CONFIG.totalDays - sickDays
@@ -539,7 +602,7 @@ function statsFor(id, r, logs) {
   const tSec = timed.reduce((a,x) => a + x.sec, 0), tMi = timed.reduce((a,x) => a + x.m, 0);
   const avgPace = tMi ? tSec / tMi : 0, bestPace = timed.length ? Math.min(...timed.map(x => x.pace)) : 0;
   const settled = full(t) || sick(t);
-  return { L, keys, count: keys.length, done, sickDays, miles, dayN, streak, bank, timed, tSec, avgPace, bestPace,
+  return { L, keys, count: keys.length, done, sickDays, miles, dayN, streak, bestStreak, bank, timed, tSec, avgPace, bestPace,
     ranToday: settled, missed: Math.max(0, dayN - done - sickDays - (settled ? 0 : 1)) };
 }
 
@@ -601,7 +664,7 @@ function render(data) {
   $("sMiles").textContent = miles.toFixed(1);
   $("sRuns").textContent = all.reduce((a,x) => a + x.s.count, 0);
   $("sToday").textContent = `${all.filter(x => x.s.ranToday).length}/${all.length}`;
-  $("sStreak").textContent = all.length ? Math.max(...all.map(x => x.s.streak)) + "🔥" : "0";
+  $("sDays").textContent = all.reduce((a,x) => a + x.s.done, 0);
   const next = JOURNEY.find(([d]) => d > miles) || JOURNEY[JOURNEY.length-1];
   const prevD = (JOURNEY[JOURNEY.indexOf(next)-1] || [0])[0];
   const reached = JOURNEY.filter(([d]) => d <= miles).pop();
@@ -615,18 +678,14 @@ function render(data) {
       ${mine ? `<button class="x" data-remove="${id}" title="Leave the challenge" aria-label="Remove ${esc(r.name)}">×</button>` : ""}
       <div class="card-top" data-view="${id}" title="Open ${esc(r.name)}'s log">
         <div class="ring">${ring(s.done/CONFIG.totalDays, r.color)}
-          <div class="num"><div><b>${s.done}</b><small>/ ${CONFIG.totalDays}</small></div></div></div>
+          <div class="num"><div><b>${s.done}</b><small>days done</small></div></div></div>
         <div class="who">
           <h3><span class="dot" style="background:${r.color}"></span>${esc(r.name)}${Store.live && mine ? ` <span class="you">You</span>` : ""}</h3>
           <div class="meta">${s.dayN ? `Day ${s.dayN} of ${CONFIG.totalDays}` : `Starts ${nice(r.start)}`} · ${s.miles.toFixed(1)} mi</div>
           <div class="chips">
-            <span class="chip fire">${s.streak} day streak 🔥</span>
-            ${!s.dayN ? "" : s.bank > 0.049 ? `<span class="chip good">+${s.bank.toFixed(1)} mi banked</span>`
-              : s.bank < -0.049 ? `<span class="chip">${(-s.bank).toFixed(1)} mi to make up</span>`
-              : `<span class="chip good">On pace ✓</span>`}
-            ${s.missed ? `<span class="chip">${s.missed} day${s.missed > 1 ? "s" : ""} missed</span>` : ""}
-            ${s.sickDays ? `<span class="chip">🤒 ${s.sickDays} sick</span>` : ""}
+            ${s.dayN && s.bank > 0.049 ? `<span class="chip good">+${s.bank.toFixed(1)} mi banked</span>` : ""}
             ${s.avgPace ? `<span class="chip">⏱ ${fmtPace(s.avgPace, 1)}</span>` : ""}
+            <span class="chip more-link">Details ›</span>
           </div>
         </div>
       </div>
@@ -647,7 +706,7 @@ function render(data) {
   $("lb").innerHTML = ranked.length ? ranked.map((x,i) => `
     <li data-view="${x.id}" title="Open ${esc(x.r.name)}'s log"><span class="rank">${["🥇","🥈","🥉"][i] || i+1}</span>
       <span class="nm">${esc(x.r.name)}</span>
-      <span class="v">${x.s.done} days · ${x.s.miles.toFixed(1)} mi · ${x.s.streak}🔥</span></li>`).join("")
+      <span class="v">${x.s.done} days · ${x.s.miles.toFixed(1)} mi</span></li>`).join("")
     : `<li class="empty">Nobody yet.</li>`;
 
   // feed
@@ -667,7 +726,29 @@ function render(data) {
     return `<li><b>${esc(g.name)}</b> logged ${g.items.length} days (${tot.toFixed(1)} mi)</li>`;
   }).join("") : `<li>Nothing logged yet. Be the first.</li>`;
 
+  // message board
+  const canPost = !Store.live || !!Store.me;
+  $("msgForm").hidden = !canPost || (Store.live && !Store.ready);
+  $("msgSignin").hidden = canPost || !Store.ready;
+  const msgs = Object.entries(data.messages || {})
+    .filter(([,m]) => m && m.text).sort((a,b) => (b[1].t||0) - (a[1].t||0)).slice(0, 100);
+  $("msgs").innerHTML = msgs.length ? msgs.map(([mid,m]) => {
+    const who = data.runners[m.uid], mine = Store.live ? m.uid === Store.me : true;
+    return `<li><div class="mh"><span class="dot" style="background:${who ? who.color : "var(--muted)"}"></span>
+      <b>${esc(who ? who.name : Store.live ? "Someone" : "You")}</b><time>${ago(m.t)}</time>
+      ${mine ? `<button class="mdel" data-delmsg="${mid}" title="Delete message" aria-label="Delete message">×</button>` : ""}</div>
+      <p>${esc(m.text)}</p></li>`;
+  }).join("") : `<li class="empty" style="border:0">No messages yet. Start the hype.</li>`;
+
   if (viewing && $("viewDlg").open) drawView();
+}
+function ago(ts) {
+  const s = (Date.now() - (ts || 0)) / 1000;
+  if (s < 60) return "just now";
+  if (s < 3600) return Math.floor(s / 60) + "m ago";
+  if (s < 86400) return Math.floor(s / 3600) + "h ago";
+  if (s < 7 * 86400) return Math.floor(s / 86400) + "d ago";
+  return new Date(ts).toLocaleDateString(undefined, { month:"short", day:"numeric" });
 }
 
 /* ---------- view-only runner page ---------- */
@@ -706,7 +787,28 @@ function drawView() {
   const s = statsFor(id, r, lastData.logs), mine = canEdit(id), t = today();
   $("viewTitle").innerHTML = `<span class="dot" style="background:${r.color}"></span>${esc(r.name)}`;
   const tile = (label, val) => `<div class="vt"><small>${label}</small><b>${val}</b></div>`;
-  const bankTxt = s.bank > 0.049 ? `+${s.bank.toFixed(1)} mi` : s.bank < -0.049 ? `−${(-s.bank).toFixed(1)} mi` : "Even";
+  const bankTile = s.bank > 0.049 ? tile("Miles banked", `+${s.bank.toFixed(1)}`)
+    : s.bank < -0.049 ? tile("Miles to make up", (-s.bank).toFixed(1)) : tile("Miles bank", "Even");
+  // streak graphic: big number + the last 14 days
+  const strip = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = addDays(t, -i), v = s.L[d];
+    const st = d < r.start ? "pre" : counts(v) ? "done" : isSick(v) ? "sick" : d === t ? "tdy" : "miss";
+    const lbl = parse(d).toLocaleDateString(undefined, { weekday:"narrow" });
+    const tip = nice(d) + ({ done:" · done", sick:" · sick day", miss:" · missed", tdy:" · not yet", pre:" · before Day 1" })[st];
+    strip.push(`<div class="sd ${st}" title="${tip}"><i>${st === "done" ? "🔥" : st === "sick" ? "🤒" : ""}</i><span>${lbl}</span></div>`);
+  }
+  const streakMsg = !s.dayN ? "Your streak starts on Day 1."
+    : s.streak === 0 ? (s.ranToday ? "" : "Log today to start a new streak.")
+    : s.streak >= s.bestStreak ? "Personal best. Keep it going!"
+    : `${s.bestStreak - s.streak} more day${s.bestStreak - s.streak > 1 ? "s" : ""} to beat your best.`;
+  const streakBox = `<div class="streakbox" style="--c:${r.color}">
+      <div class="sbig"><span class="flame">🔥</span><div><b>${s.streak}</b><small>day streak</small></div></div>
+      <div class="sright">
+        <div class="strip">${strip.join("")}</div>
+        <p>Best: <b>${s.bestStreak} day${s.bestStreak === 1 ? "" : "s"}</b>${streakMsg ? ` · ${streakMsg}` : ""}</p>
+        <p class="snote">Sick days pause a streak; they don't break it.</p>
+      </div></div>`;
   const days = [...s.keys].sort().reverse();
   const log = days.map(d => {
     const v = s.L[d], m = milesOf(v), sk = isSick(v), ok = counts(v);
@@ -722,11 +824,12 @@ function drawView() {
   }).join("");
   $("viewBody").innerHTML = `
     <p class="vmeta">${s.dayN ? `Day ${s.dayN} of ${CONFIG.totalDays}` : `Starts ${nice(r.start)}`} · started ${nice(r.start)}${mine ? "" : " · view only"}</p>
+    ${streakBox}
     <div class="vstats" style="--c:${r.color}">
       ${tile("Days done", `${s.done}<span>/${CONFIG.totalDays}</span>`)}
       ${tile("Miles", s.miles.toFixed(1))}
-      ${tile("Streak", s.streak + "🔥")}
-      ${tile("Miles bank", bankTxt)}
+      ${bankTile}
+      ${tile("Days missed", s.missed)}
       ${tile("Avg pace", s.avgPace ? fmtTime(s.avgPace) : "—")}
       ${tile("Best pace", s.bestPace ? fmtTime(s.bestPace) : "—")}
       ${tile("Time moving", s.tSec ? fmtTime(s.tSec) : "—")}
@@ -776,7 +879,7 @@ let toastT;
 function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 3500); }
 function guard(p) {
   if (p && p.catch) p.catch(err => toast(/permission/i.test((err && (err.code || err.message)) || "")
-    ? "You can only edit your own card. Are you signed in?" : "Couldn't save: " + (err.message || err)));
+    ? "You can only change your own card and messages. Are you signed in?" : "Couldn't save: " + (err.message || err)));
 }
 function authMsg(err) {
   const c = (err && err.code) || "";
@@ -953,6 +1056,26 @@ document.addEventListener("click", e => {
     const r = d.runners[b.dataset.remove];
     if (confirm(`Remove ${r.name} and everything they've logged? This can't be undone.`)) guard(Store.removeRunner(b.dataset.remove));
   }
+});
+
+$("msgText").addEventListener("input", () => { $("msgCount").textContent = 280 - $("msgText").value.length; });
+$("msgText").addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) $("msgForm").requestSubmit(); });
+$("msgForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const text = $("msgText").value.trim().slice(0, 280); if (!text) return;
+  $("msgGo").disabled = true;
+  try {
+    await Store.postMessage(text);
+    $("msgText").value = ""; $("msgCount").textContent = 280;
+  } catch (err) {
+    toast(/permission/i.test((err && (err.code || err.message)) || "")
+      ? "Couldn't post. Make sure you're signed in (and the new Firebase rules are published)." : "Couldn't post: " + (err.message || err));
+  }
+  $("msgGo").disabled = false;
+});
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-delmsg]"); if (!b) return;
+  if (confirm("Delete this message?")) guard(Store.deleteMessage(b.dataset.delmsg));
 });
 
 $("authCancel").onclick = () => $("authDlg").close();
