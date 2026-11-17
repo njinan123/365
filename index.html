@@ -101,6 +101,9 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
 dialog h3{margin-bottom:12px}
 dialog label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
 dialog input{width:100%}
+/* the date is nearly always "today" — a full-width bar reads as the biggest
+   thing in the form, so keep it to the size of a date */
+#logDate{max-width:220px}
 dialog .actions{margin-top:16px}
 dialog.wide{width:min(460px,94vw)}
 .row2{display:flex;gap:10px}
@@ -939,7 +942,10 @@ function openSingle(id, date) {
   $("logDlg").showModal();
 }
 function fillSingle() {
-  const v = editing && (lastData.logs[editing] || {})[$("logDate").value];
+  const day = $("logDate").value;
+  if (editing && day && lastData.runners[editing])
+    $("logTitle").textContent = `${lastData.runners[editing].name} · ${nice(day)}`;
+  const v = editing && (lastData.logs[editing] || {})[day];
   $("logMiles").value = v ? (milesOf(v) || "") : CONFIG.dailyMiles;
   $("logTime").value = v && v.d ? fmtTime(v.d) : "";
   const nt = splitNote(v && v.n);
