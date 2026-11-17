@@ -105,6 +105,11 @@ dialog .actions{margin-top:16px}
 dialog.wide{width:min(460px,94vw)}
 .row2{display:flex;gap:10px}
 .row2>div{flex:1;min-width:0}
+.moods{display:flex;gap:8px;margin-bottom:8px}
+.mood{flex:1;font-size:24px;line-height:1;padding:10px 0;border-radius:12px;border:1px solid var(--line);
+  background:var(--panel2);opacity:.55;transition:opacity .12s,border-color .12s,background .12s}
+.mood:hover{opacity:.85}
+.mood[aria-pressed="true"]{opacity:1;border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%,var(--panel2))}
 .hist{max-height:50vh;overflow:auto;margin-top:6px;border-top:1px solid var(--line)}
 .hrow{display:flex;align-items:center;gap:10px;padding:7px 2px;border-bottom:1px solid var(--line)}
 .hrow .dn{font-weight:800;width:62px;flex:none}
@@ -349,8 +354,14 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
       </div>
       <p class="khelp" id="logKHelp"></p>
     </div>
-    <label for="logNote">Note (optional)</label>
-    <textarea id="logNote" rows="2" maxlength="280" placeholder="How'd it go?"></textarea>
+    <label>How was it?</label>
+    <div class="moods" role="group" aria-label="How was it?">
+      <button type="button" class="mood" data-mood="🔥" aria-pressed="false" aria-label="Fire" title="Fire">🔥</button>
+      <button type="button" class="mood" data-mood="😴" aria-pressed="false" aria-label="Tired" title="Tired">😴</button>
+      <button type="button" class="mood" data-mood="💪" aria-pressed="false" aria-label="Flex" title="Flex">💪</button>
+      <button type="button" class="mood" data-mood="⚡" aria-pressed="false" aria-label="Fast" title="Fast">⚡</button>
+    </div>
+    <input type="text" id="logNoteText" maxlength="240" placeholder="Add a note (optional)" autocomplete="off">
     <div class="actions">
       <button type="button" class="btn ghost" id="logDelete">Remove</button>
       <button type="button" class="btn ghost" id="logCancel">Cancel</button>
@@ -625,7 +636,7 @@ function yearGrid(r, s) {
     let cls = d > t ? "future" : ok ? (v.x && isShort(m) ? "done ok" : "done") : sk ? "sick" : m > 0 ? "part" : d < t ? "miss" : "";
     if (d === t) cls += " now";
     const tip = nice(d) + (m ? ` · ${m} mi` : "") + (v && v.d ? ` · ${fmtTime(v.d)}` : "") + (ok && isShort(m) ? " · counted" : "")
-      + (sk ? " · sick day" : "") + (v && v.n ? ` · “${v.n}”` : "");
+      + (sk ? " · sick day" : "") + (v && v.n ? (isMoodNote(v.n) ? ` · ${v.n}` : ` · “${v.n}”`) : "");
     out += `<i class="${cls}" data-d="${d}" title="${esc(tip)}"></i>`;
   }
   return out;
@@ -723,7 +734,7 @@ function render(data) {
     if (g.items.length === 1) { const f = g.items[0], when = f.d === t ? " today" : ` on ${nice(f.d)}`;
       const what = f.s ? `took a sick day 🤒${when}` : f.m > 0 ? `did ${f.m} mi${f.sec ? ` in ${fmtTime(f.sec)}` : ""}${f.x ? " (counted)" : ""}${when}`
         : f.x ? `took a counted rest day${when}` : `left a note${when}`;
-      return `<li><b>${esc(g.name)}</b> ${what}${f.n ? ` · “${esc(f.n)}”` : ""}</li>`; }
+      return `<li><b>${esc(g.name)}</b> ${what}${f.n ? (isMoodNote(f.n) ? ` · ${esc(f.n)}` : ` · “${esc(f.n)}”`) : ""}</li>`; }
     const tot = g.items.reduce((a,f) => a + f.m, 0);
     return `<li><b>${esc(g.name)}</b> logged ${g.items.length} days (${tot.toFixed(1)} mi)</li>`;
   }).join("") : `<li>Nothing logged yet. Be the first.</li>`;
@@ -819,7 +830,7 @@ function drawView() {
     if (sk) bits.push(`<span class="tag sick">Sick day</span>`);
     else if (ok && isShort(m)) bits.push(`<span class="tag">Counted</span>`);
     else if (!ok) bits.push(`<span class="tag miss">Short</span>`);
-    if (v.n) bits.push(`<i>“${esc(v.n)}”</i>`);
+    if (v.n) bits.push(isMoodNote(v.n) ? `<i>${esc(v.n)}</i>` : `<i>“${esc(v.n)}”</i>`);
     return `<li><div class="l1"><span>${parse(d).toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}
       <small>Day ${diff(r.start, d) + 1}</small></span><b>${sk && !m ? "🤒" : m + " mi"}</b></div>
       ${bits.length ? `<div class="l2">${bits.join(" · ")}</div>` : ""}</li>`;
@@ -896,6 +907,29 @@ function authMsg(err) {
   if (c.includes("network")) return "No connection. Check your internet and try again.";
   return (err && err.message) || "Something went wrong.";
 }
+/* ---------- "how was it": an emoji plus an optional note, saved as one string ---------- */
+const MOODS = ["🔥","😴","💪","⚡"];
+const isMoodNote = n => MOODS.some(m => (n || "").startsWith(m));  // emoji-led notes read as captions
+const splitNote = n => {
+  n = n || "";
+  const mood = MOODS.find(m => n.startsWith(m));
+  return mood ? { mood, text: n.slice(mood.length).trim() } : { mood: "", text: n };
+};
+function setMood(note) {
+  const mood = splitNote(note).mood;
+  document.querySelectorAll('#logDlg [data-mood]').forEach(b =>
+    b.setAttribute("aria-pressed", b.dataset.mood === mood ? "true" : "false"));
+}
+function moodOf() {
+  const on = document.querySelector('#logDlg [data-mood][aria-pressed="true"]');
+  return on ? on.dataset.mood : "";
+}
+document.querySelectorAll('#logDlg [data-mood]').forEach(b => b.addEventListener("click", () => {
+  const on = b.getAttribute("aria-pressed") === "true";
+  document.querySelectorAll('#logDlg [data-mood]').forEach(o => o.setAttribute("aria-pressed", "false"));
+  if (!on) b.setAttribute("aria-pressed", "true");
+}));
+
 function openSingle(id, date) {
   editing = id; const r = lastData.runners[id], v = (lastData.logs[id] || {})[date];
   $("logTitle").textContent = `${r.name} · ${nice(date)}`;
@@ -908,7 +942,9 @@ function fillSingle() {
   const v = editing && (lastData.logs[editing] || {})[$("logDate").value];
   $("logMiles").value = v ? (milesOf(v) || "") : CONFIG.dailyMiles;
   $("logTime").value = v && v.d ? fmtTime(v.d) : "";
-  $("logNote").value = (v && v.n) || "";
+  const nt = splitNote(v && v.n);
+  setMood(nt.mood);
+  $("logNoteText").value = nt.text;
   const k = kindOf(v);
   document.querySelectorAll('input[name=logK]').forEach(i => i.checked = i.value === k);
   // nothing logged on this day yet -> it's a new entry, not an edit
@@ -1094,7 +1130,8 @@ $("authForm").addEventListener("submit", async e => {
 $("logDate").addEventListener("change", fillSingle);
 $("logForm").addEventListener("submit", () => {
   if (!editing) return;
-  const d = $("logDate").value, m = parseFloat($("logMiles").value) || 0, n = $("logNote").value.trim();
+  const d = $("logDate").value, m = parseFloat($("logMiles").value) || 0;
+  const n = [moodOf(), $("logNoteText").value.trim()].filter(Boolean).join(" ");
   const k = isShort(m) ? logK() : "", sec = parseTime($("logTime").value) || 0;
   const prev = (lastData.logs[editing] || {})[d];
   if (!(m > 0) && !n && !k) { if (prev) guard(Store.removeLog(editing, d)); return; }
