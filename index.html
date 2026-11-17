@@ -354,7 +354,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
     <div class="actions">
       <button type="button" class="btn ghost" id="logDelete">Remove</button>
       <button type="button" class="btn ghost" id="logCancel">Cancel</button>
-      <button class="btn">Save</button>
+      <button class="btn" id="logSave">Save</button>
     </div>
   </form>
 </dialog>
@@ -692,7 +692,9 @@ function render(data) {
       <div class="grid" data-g="${id}">${yearGrid(r,s)}</div>
       ${mine ? `<div class="actions">
         <button class="btn ${s.ranToday ? "doneToday" : ""}" data-today="${id}">
-          ${isSick(s.L[t]) ? "🤒 Sick today" : s.ranToday ? "✓ Done today" : `Log today's ${CONFIG.dailyMiles}`}</button>
+          ${isSick(s.L[t]) ? "🤒 Sick today" : s.ranToday ? "Edit today's log"
+            : s.L[t] && milesOf(s.L[t]) > 0 ? `Finish today's ${CONFIG.dailyMiles}`
+            : `Log today's ${CONFIG.dailyMiles}`}</button>
         <button class="btn ghost" data-hist="${id}">Past days</button>
       </div>` : `<div class="actions">
         <button class="btn ghost" style="flex:1" data-view="${id}">View log</button>
@@ -909,6 +911,9 @@ function fillSingle() {
   $("logNote").value = (v && v.n) || "";
   const k = kindOf(v);
   document.querySelectorAll('input[name=logK]').forEach(i => i.checked = i.value === k);
+  // nothing logged on this day yet -> it's a new entry, not an edit
+  $("logSave").textContent = v ? "Save" : "Log it";
+  $("logDelete").hidden = !v;
   syncX();
 }
 const K_HELP = { "": "Doesn't count toward your 365. Breaks your streak.",
@@ -1044,12 +1049,10 @@ document.addEventListener("click", e => {
     return;
   }
   if (b.dataset.today && canEdit(b.dataset.today)) {
-    const id = b.dataset.today, r = d.runners[id], s = statsFor(id, r, d.logs);
-    if (isSick(s.L[today()])) { openSingle(id, today()); return; }
-    if (s.ranToday) { if (confirm(`Undo ${r.name}'s miles for today?`)) guard(Store.removeLog(id, today())); return; }
-    const prev = s.L[today()];
-    guard(Store.setLog(id, today(), entry(Math.max(CONFIG.dailyMiles, milesOf(prev)), prev && prev.n, "", prev && milesOf(prev) >= CONFIG.dailyMiles - 1e-9 ? prev.d : 0)));
-    confetti(r.color);
+    const id = b.dataset.today, s = statsFor(id, d.runners[id], d.logs);
+    // always go through the form: log it, finish it, or correct today's entry
+    openSingle(id, today());
+    if (!s.ranToday) { $("logMiles").focus(); $("logMiles").select(); }
   }
   if (b.dataset.hist && canEdit(b.dataset.hist)) openHistory(b.dataset.hist);
   if (b.dataset.remove && canEdit(b.dataset.remove)) {
@@ -1100,7 +1103,7 @@ $("logForm").addEventListener("submit", () => {
   if (counts(e) && !counts(prev)) confetti(lastData.runners[editing].color);
 });
 $("logCancel").onclick = () => $("logDlg").close();
-$("logDelete").onclick = () => { if (editing) guard(Store.removeLog(editing, $("logDate").value)); $("logDlg").close(); };
+$("logDelete").onclick = () => { if (!editing) return; if (!confirm("Remove this day from the log?")) return; guard(Store.removeLog(editing, $("logDate").value)); $("logDlg").close(); };
 
 $("addStart").value = today();
 $("addStart").max = today();
