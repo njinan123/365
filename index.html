@@ -24,13 +24,12 @@ button,input{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
 
 /* header */
-.hero{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}
+.hero{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px}
 .hero h1{font-size:clamp(40px,9vw,76px);line-height:.9}
 .hero h1 span{color:var(--accent)}
 .hero p{color:var(--muted);margin-top:8px;max-width:420px}
-.today{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;text-align:right}
-.today b{display:block;font-size:20px}
-.today small{color:var(--muted)}
+.hero p.hero-date{color:var(--muted);font-size:15px;margin-top:10px}
+.rule{height:1px;background:var(--line);border:0;margin:0 0 16px}
 
 .banner{background:color-mix(in srgb,var(--warm) 14%,transparent);border:1px solid color-mix(in srgb,var(--warm) 40%,transparent);
   color:var(--text);border-radius:12px;padding:10px 14px;margin-bottom:18px;font-size:13px}
@@ -41,11 +40,48 @@ button{cursor:pointer;border:0;background:none}
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
 .stat .big{font-size:28px;line-height:1.1}
 .stat small{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
-.journey{grid-column:span 4}
-.bar{height:10px;background:var(--panel2);border-radius:99px;overflow:hidden;margin-top:10px}
-.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--warm));border-radius:99px;transition:width .6s}
+.journey{grid-column:span 4;overflow:hidden;padding:28px 16px 26px}
+.jm-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:6px}
+.jm-head b{font-family:"Archivo Black",Inter,sans-serif;font-size:22px;letter-spacing:-.02em;line-height:1}
+.jm-head b i{font-style:normal;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:0;margin-left:3px}
+.jm-map{position:relative;margin:2px -8px -4px}
+.jm-map::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,var(--panel) 0,transparent 16%,transparent 88%,var(--panel) 100%)}
+@media (min-width:760px){.jm-map{max-width:780px;margin:2px auto 0}}
+.jm-map svg{display:block;width:100%;height:auto}
+.jm-land{fill:color-mix(in srgb,var(--text) 12%,transparent);stroke:color-mix(in srgb,var(--text) 25%,transparent);stroke-width:1}
+.jm-states{fill:none;stroke:color-mix(in srgb,var(--text) 17%,transparent);stroke-width:1}
+.jm-route{fill:none;stroke:color-mix(in srgb,var(--text) 42%,transparent);stroke-width:1.6;stroke-dasharray:5 7;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.jm-glow{fill:none;stroke:var(--accent);stroke-width:7;opacity:.22;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.jm-done{fill:none;stroke:var(--accent);stroke-width:3;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.jm-dot{fill:none;stroke:color-mix(in srgb,var(--text) 55%,transparent);stroke-width:1.6}
+.jm-dot.on{fill:var(--accent);stroke:var(--accent)}
+.jm-head-dot{fill:var(--text);stroke:var(--accent);stroke-width:2.5}
+.jm-pulse{fill:var(--accent);opacity:.7;transform-box:fill-box;transform-origin:center;animation:jPulse 2.4s ease-out infinite}
+@keyframes jPulse{0%{transform:scale(.3);opacity:.6}75%{transform:scale(2.4);opacity:0}100%{transform:scale(2.4);opacity:0}}
+@media (prefers-reduced-motion:reduce){.jm-pulse{animation:none;opacity:0}}
+.jm-labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.jm-labels span{position:absolute;display:block;transform:translate(-50%,-155%);white-space:nowrap;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text);text-shadow:0 0 5px var(--panel),0 0 5px var(--panel),0 0 2px var(--panel)}
+.jm-labels span.under{transform:translate(-50%,42%)}
+.jm-labels span.live{color:var(--accent)}
+.jm-labels span.anchor.on{color:var(--text)}
+.jm-labels span.anchor:not(.on){color:var(--muted)}
+.jm-labels span.wide{font-size:11px}
+.jm-foot{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:14px;font-size:13px}
+.jm-foot .to{color:var(--muted);font-variant-numeric:tabular-nums}
 @media (max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}.journey{grid-column:span 2}}
 
+/* crew stats */
+.statsrow{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:22px}
+.statsrow .sbox{grid-column:span 3}
+.statsrow .sbox:nth-child(-n+3){grid-column:span 2}
+@media (min-width:720px){.statsrow{grid-template-columns:repeat(5,1fr)}.statsrow .sbox,.statsrow .sbox:nth-child(-n+3){grid-column:auto}}
+.sbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+.sbox small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;line-height:1.2;white-space:nowrap}
+.sbox b{display:block;font-size:22px;font-weight:800;margin-top:7px;line-height:1.1;font-variant-numeric:tabular-nums}
+.sbox b i{font-style:normal;font-size:11px;color:var(--muted);font-weight:700;margin-left:2px}
+.sbox .who{display:block;color:var(--muted);font-size:12px;font-weight:700;margin-top:3px}
+.sbox .who .nm{color:var(--text)}
+.sbox .who i{font-style:normal;font-weight:600;opacity:.85;margin-left:5px}
 .sec-head{display:flex;align-items:center;justify-content:space-between;margin:28px 0 12px}
 .sec-head h2{font-size:22px}
 
@@ -123,7 +159,7 @@ dialog.wide{width:min(460px,94vw)}
 .linkbtn{color:var(--accent);font-weight:800;font-size:13px;white-space:nowrap}
 .grid i[data-d]:not(.future){cursor:pointer}
 .hint{color:var(--muted);font-size:13px;margin:-4px 0 10px}
-.acct{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-6px 0 18px;color:var(--muted);font-size:14px}
+.acct{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 18px;color:var(--muted);font-size:14px}
 .acct:empty{display:none}
 .acct b{color:var(--text)}
 .acct .btn{flex:none;padding:8px 18px}
@@ -274,24 +310,40 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
   <header class="hero">
     <div>
       <h1>365 <span>×</span> 3.65</h1>
-      <p>3.65 miles a day, every day, for a year. Walk it or run it. Tap your card when today's miles are done.</p>
+      <p class="hero-date" id="todayDay"></p>
     </div>
-    <div class="today"><small id="todayLabel"></small><b id="todayDay"></b></div>
   </header>
+  <hr class="rule">
 
   <div class="acct" id="acct"></div>
   <div id="banner"></div>
 
   <section class="stats">
-    <div class="stat"><small>Crew miles</small><div class="big" id="sMiles">0</div></div>
-    <div class="stat"><small>Days logged</small><div class="big" id="sRuns">0</div></div>
-    <div class="stat"><small>Done today</small><div class="big" id="sToday">0/0</div></div>
-    <div class="stat"><small>Crew days done</small><div class="big" id="sDays">0</div></div>
     <div class="stat journey">
-      <small>Crew journey</small>
-      <div id="jText" style="font-weight:700;margin-top:4px"></div>
-      <div class="bar"><i id="jBar" style="width:0"></i></div>
+      <div class="jm-head"><small>Crew journey</small><b id="jMiles">0<i>mi</i></b></div>
+      <div class="jm-map">
+        <svg id="jSvg" viewBox="0 0 1000 466" xmlns="http://www.w3.org/2000/svg" role="img">
+          <path class="jm-land" d="M777 535l8 5l16 -4l35 16l6 -1l10 1l0 5l13 -2l15 4l-2 5l-10 5l-12 3l-12 1l-24 7l9 -12l-8 -3l-11 1l-7 -4l-6 -9l-9 2l-17 -2l-6 -3l-22 1l-7 -2l6 -6l-17 2l-11 11l-7 1l-2 4l-8 3l-7 0l8 -7l3 -7l15 -9l13 -4l4 -2l14 -1l14 -2ZM810 511l-4 2l-6 -9l-7 -4l1 -12l5 -1l9 14ZM796 462l-17 6l-3 -6l8 -3l10 -1ZM809 460l0 13l-4 -2l-1 -9l-9 -6l0 -2ZM897 58l10 -1l11 -4l-4 9l-4 3l-17 -2l-5 -5l2 -7ZM903 7l-5 2l-17 0l-13 -4l3 -3l17 -1l14 3ZM170 43l-6 1l-17 -14l-1 -7l-9 -10l0 -5l-11 -7l-1 -11l3 -3l16 12l10 5l5 17l9 11ZM547 -253l0 14l11 -11l11 8l-2 10l10 9l8 -11l5 -13l-1 -14l25 -1l12 5l2 7l-6 8l8 7l0 7l-16 12l-12 4l-10 -3l-2 8l-8 13l-2 7l-10 11l-13 2l-7 7l0 10l-11 3l-11 13l-11 18l-3 13l-1 19l16 3l5 15l5 13l15 -4l20 6l11 5l8 8l14 3l12 6l18 -1l12 0l1 15l6 17l11 18l20 14l7 -7l3 -19l-11 -26l-9 -8l16 -11l10 -14l3 -13l-3 -11l-10 -13l-14 -10l8 -19l-7 -14l-8 -24l6 -5l17 1l10 0l7 -6l10 3l14 6l4 5l18 -3l3 13l9 19l10 0l10 7l11 -13l4 -21l4 -9l12 11l38 31l-1 11l17 4l13 5l18 -2l8 2l10 12l9 -1l7 4l9 17l-10 19l-15 13l-9 19l-17 10l-25 5l-17 6l-11 5l-6 15l-12 12l-11 28l-9 20l10 -6l12 -28l20 -22l16 -7l13 5l-7 15l10 17l9 12l18 3l19 -10l4 -23l6 11l10 4l-10 16l-23 20l-10 12l-9 17l-10 2l-6 -15l17 -21l-19 7l-13 6l4 5l-11 13l-11 10l-12 9l-5 16l3 10l7 8l5 -1l-3 -6l5 3l0 5l-8 5l-6 2l-9 5l-13 6l-9 7l18 -8l5 3l-17 10l-9 2l0 -3l-3 6l4 0l0 14l-6 16l-2 -5l-3 0l-6 -3l5 9l4 2l2 7l-8 24l-1 -1l1 -13l-8 -5l-5 -15l-1 8l6 11l-10 -1l11 4l4 17l4 0l3 6l6 18l-7 15l-14 8l-7 13l-7 2l-7 8l-1 7l-14 14l-7 10l-6 12l0 13l5 12l7 15l9 11l2 8l11 20l2 19l-2 11l-5 3l-8 -1l-4 -7l-7 -3l-20 -27l-4 -6l2 -13l-6 -9l-14 -14l-7 -2l-14 11l-3 -1l-9 -8l-10 -3l-18 4l-14 -1l-11 2l-7 3l4 5l0 7l3 4l-2 2l-6 -2l-6 4l-12 0l-12 -9l-14 3l-11 -4l-10 2l-13 4l-15 14l-16 7l-8 9l-4 8l-1 13l1 8l3 6l-6 16l-4 13l-1 24l-2 8l3 10l5 9l3 14l12 13l4 10l7 9l19 4l7 7l16 -5l13 -2l25 -7l11 -8l3 -10l1 -15l3 -6l11 -5l18 -5l15 -1l11 -2l4 3l0 8l-8 12l-3 11l3 3l-5 21l-5 -4l-3 1l0 2l3 0l0 5l-2 8l2 2l-2 7l2 1l-2 9l-3 5l-3 1l-3 6l6 3l1 -3l8 2l3 -3l6 -1l2 1l2 -1l9 1l8 -1l6 -3l2 -2l10 1l5 -1l4 -2l11 2l12 5l7 2l5 4l-1 2l-1 4l3 6l-3 6l-1 7l0 8l2 4l1 8l-3 2l0 7l1 4l-3 5l2 5l3 2l6 8l26 17l0 3l8 0l2 -2l6 3l9 -2l8 -6l11 -5l5 -6l11 -1l0 2l11 -2l9 2l7 3l8 3l10 -1l12 -14l7 -4l-1 -5l1 -15l9 -10l12 -3l0 -4l15 -2l19 -17l7 -10l7 -1l6 3l-2 6l0 4l-10 5l8 6l2 9l-6 11l11 11l7 -3l2 -13l-8 -4l-4 -12l21 -13l-4 -7l5 -7l9 10l13 -4l15 6l2 5l17 -5l19 -8l13 4l15 -3l8 -9l-1 -4l44 -17l-14 11l9 5l15 -5l17 3l8 11l9 -4l23 2l15 5l4 7l7 -2l23 5l23 -7l1 -3l14 -8l22 -5l22 -4l25 2l6 5l6 -4l8 6l23 19l12 -3l5 10l-8 18l8 1l34 -15l8 13l10 -16l26 -9l35 -9l14 2l1 9l19 -17l40 -15l26 -19l34 -7l32 -2l16 -7l16 -10l9 -1l26 15l7 25l-4 14l-14 35l-3 22l-7 19l-4 4l0 12l16 20l9 30l-3 8l6 17l-11 27l3 14l-13 15l-1 9l-23 14l-30 25l-12 13l-22 17l-21 23l-12 20l1 10l6 4l2 12l-2 8l-13 14l-16 30l-16 18l-13 13l-6 14l-13 13l-7 11l-24 18l-18 6l-13 6l-23 6l-16 7l-17 1l0 6l34 -5l0 8l16 -2l1 5l-18 21l-34 20l-48 21l-28 10l7 3l-2 9l6 3l-14 8l-25 11l-25 5l-9 5l6 8l18 -3l13 -8l9 2l-22 11l-19 12l-1 10l-4 6l-24 8l-19 11l-6 8l27 -2l26 -7l-7 10l-29 14l-14 15l-24 10l-9 6l10 5l19 -1l-35 10l-35 14l-3 8l-11 3l-31 6l-66 6l-10 -3l7 -6l-15 -1l-6 -13l10 -10l26 -12l-40 6l23 -13l6 -16l30 -4l9 -21l-18 2l-6 13l-16 3l5 -15l5 -19l10 -9l-10 -8l-4 -10l10 -3l12 -20l13 -20l7 -19l-10 -14l5 -11l-7 -13l11 -17l-2 -23l1 -27l0 -29l-7 -19l-10 -17l-25 -1l-3 -4l-49 -2l-45 -5l-19 -4l-12 -9l3 -5l-23 -14l-27 -21l-26 -24l-10 -5l-9 -10l-19 -6l-16 -4l6 -7l-13 -13l5 -11l16 -12l9 -14l-6 -5l-7 8l-13 -5l3 -5l-6 -13l7 -3l3 -11l6 -11l-3 -6l11 -5l13 -9l-4 -4l8 -3l-2 -7l3 -7l10 -3l13 -21l-8 -2l2 -10l-8 -14l4 -5l-6 -13l-10 -7l-7 -4l-6 -7l4 -6l-5 0l-5 -5l-10 -2l-8 2l-3 6l-7 6l-5 1l-1 4l11 7l-5 3l-3 3l-9 2l-5 -9l-2 3l-6 0l-5 -6l-8 1l-6 -2l-8 2l0 3l-3 -2l-11 -2l-4 -3l2 -3l-2 -4l-5 -3l-15 -4l-2 -4l-6 -3l2 5l-3 4l-5 -4l-7 -1l-3 -3l0 -5l2 -5l-6 -2l4 -4l-16 -10l-5 -6l-9 -4l-10 -7l2 -3l3 3l2 -2l-4 -5l-6 -1l-2 4l-10 1l-7 -1l-8 -3l-11 0l-5 -4l-10 -2l-12 0l-9 -3l-10 -6l-21 -18l-10 -5l-15 -5l-10 2l-15 6l-9 2l-13 -5l-14 -3l-17 -9l-13 -3l-20 -9l-15 -9l-4 -5l-10 -1l-18 -7l-7 -9l-18 -11l-8 -12l-3 -9l6 -1l-1 -6l4 -4l1 -6l-5 -8l-1 -8l-5 -9l-13 -19l-15 -16l-7 -12l-13 -10l-2 -4l4 -11l-8 -5l-8 -10l-2 -14l-8 -2l-8 -11l-6 -10l0 -6l-6 -15l-3 -15l2 -6l-10 -10l-5 0l-8 -6l-4 6l1 9l-1 14l4 9l9 14l2 5l2 1l1 7l3 0l1 12l4 6l2 7l9 10l2 18l7 17l0 10l8 2l10 17l-1 3l-8 6l-3 -1l-3 -11l-9 -12l-10 -10l-8 -6l3 -13l-1 -10l-17 -17l-2 2l-3 -5l-9 -6l-8 -13l2 -1l6 3l7 -6l2 -8l-9 -15l-8 -7l-11 -41l-2 -17l0 -10l-8 -12l-6 -4l0 -5l-8 -3l-4 -6l-13 -6l-3 -3l1 -11l-9 -21l-5 -28l2 -4l-4 -7l-6 -18l2 -15l-4 -12l7 -13l4 -16l0 -14l10 -15l13 -31l5 -24l1 -16l-1 -9l2 -3l15 11l2 19l4 -4l2 -15l0 -15l-1 -1l-17 -23l-6 -10l-18 -14l-1 -17l5 -10l-11 -12l3 -13l-8 -17l3 -8l-3 -9l-7 -8l2 -15l-7 -18l1 -17l-24 -12l-9 -10l-11 -24l-21 -21l-13 -5l-13 -16l-7 -12l-11 -3l-4 11l-17 -6l-11 0l-11 -3l4 -9l13 -11l11 2l0 -5l-15 0l-12 6l-19 1l2 11l-15 4l-13 -1l-12 -2l-6 5l-19 -3l-7 4l-15 -2l-5 -6l-23 -5l-11 -1l-17 -9l0 -3l15 2l11 3l15 0l12 7l8 -2l18 1l4 -2l10 0l9 -9l10 -4l-12 -3l-1 -5l-8 2l0 -11l-6 3l2 -9l-12 -1l-5 -4l6 -9l5 -3l-1 -9l-12 -6l-2 -11l-2 -8l6 -7l-1 -10l9 -4l12 -1l8 -4l6 4l3 6l11 -1l5 6l8 1l3 -7l-2 -5l9 -1l-5 -3l-9 -4l-5 1l-3 -7l-11 -8l-8 -12l2 -7l-3 -14l14 4l19 8l6 5l-6 5l15 12l0 -12l-4 -11l0 -10l-3 -10l-6 -11l9 -2l12 10l12 2l6 -4l10 1l8 4l16 6l5 5l15 2l8 10l2 8l4 0l11 9l-2 2l10 9l8 4l13 12l13 10l5 4l11 4l9 10l20 16l10 11l7 5l10 -2l11 0l11 7l14 -1l14 2l4 7l7 -1l4 -5l5 3l9 16l14 -5l-2 10l11 1l4 -3l10 4l11 8l18 10l11 5l9 1l10 9l-13 4l15 6l23 3l8 -1l8 9l11 -6l-8 -7l6 -4l10 1l7 -1l7 4l8 9l10 -1l15 8l14 -2l12 1l0 -9l7 -2l14 5l0 13l5 -11l8 0l3 -14l-9 -8l-10 -5l1 -15l10 -9l10 2l9 5l12 14l-7 7Z"/>
+          <path class="jm-states" d="M786 189l-5 -2l-1 -4l-6 -4l-57 12l-1 -5M607 148l-2 -2l1 -3l-3 0l1 -5l-1 -2l-3 -1l-1 -3l-6 0l-19 -5l-1 -3l-3 0M563 180l-2 -8l-4 -2l-6 -6l-6 -3l-4 -3l1 -14l-3 -3l2 -3l6 -4l0 -11l3 -1M711 217l-4 -24M650 206l18 -2M823 180l0 -2l-2 -10M799 173l2 13l1 2l-2 2l1 2M594 307l-2 9M520 309l0 -8M728 231l-15 3l-2 -17M688 262l4 -1l1 -3l0 -4l1 -4l2 0l1 2l1 -1l0 -5l3 -4l1 0l4 -2l3 -4l1 -11l0 -5l-1 -2l2 -1M615 333l-30 2M571 198l38 -3M563 238l-1 4l1 6l3 3l7 6l2 7l1 0l3 -1l3 3l-3 9l6 5l1 0l6 5l1 4l0 3l2 4l1 -1l3 3M573 372l1 1l-1 3l3 3l-1 3l2 3l-2 2l0 3l-3 3l-3 9l-1 2l0 4l29 -1l-1 6l3 4l1 5M242 276l71 12M672 327l0 -4l3 -1l2 -5l10 -4l6 -8l2 2l5 -5l2 0l2 -3l3 -1l-1 -5M690 325l9 -5l13 -2l7 0l1 1l1 -1l3 3l0 2l16 -3l20 14M798 193l-12 -4M786 189l-1 1l-2 4l-2 2l2 3l-1 2l0 3l2 0l0 2l6 4l-7 9M509 246l-6 -11M494 182l0 -17l-1 -18l-2 -1l-2 -3l1 -2l3 -2l0 -3M494 200l-2 0l-2 -2l-7 -4l-8 0l-1 0l-5 -1l-3 -3l-72 -4M592 316l-1 4l-3 2l0 3l-2 2l0 6l-1 2M520 309l65 -1l1 2l-3 6l9 0M523 362l0 -34l-3 -19M573 372l1 -4l-2 -4l0 -5l4 -10l4 -4l2 -5l0 -2l3 -2l0 -1M573 372l-44 2M615 333l38 -4M615 333l2 3l-1 53l2 28M832 175l-1 -3l-3 -1l-2 -5l-5 2M798 160l1 13M799 173l22 -5M399 297l0 9M313 288l-14 103M299 193l-3 18l27 4M391 223l3 -37M397 149l-3 37M153 80l6 2l6 4l1 4l0 6l2 1l3 1l9 0l5 3l6 0l6 1l8 -1l3 1l4 -1l26 6M493 136l0 -3l-2 -10l-2 -18l-3 -7l0 -12l-1 -4M399 133l70 4l24 -1M672 327l-19 2M690 325l-3 5l7 4l6 8l11 8l2 4l5 3l3 6l0 1l3 2l2 3l1 3l4 1M672 327l18 -2M670 401l-2 -4l0 -7l-1 -3l0 -6l2 -3l-4 -9l-12 -40M764 242l2 -2l-3 -2l-1 1M778 221l-50 10M753 234l-4 -4l-4 -1l-4 3l-4 0l-8 8l-1 -9M313 288l10 -73M399 297l14 1M417 243l1 -18l-27 -2M399 297l-41 -4l-45 -5M391 223l-68 -8M623 208l27 -3l0 1M656 253l-6 -47M614 209l4 43l-1 5l1 1l1 6l-4 8l-2 9M563 180l2 4l-1 1l0 4l1 5l5 1l1 3M563 180l-69 2M503 235l55 -2l5 5M571 198l3 2l0 2l4 3l0 5l-3 5l-8 3l-1 3l2 1l1 3l-3 6l-3 3l0 4M503 235l-1 -3l0 -7l-1 -5l-2 -3l-1 -7l-3 -3l-1 -7M494 200l0 -1l-2 -2l2 -8l-2 -3l0 -4l2 0M786 253l1 -1l3 -1M764 242l-2 -3M678 297l28 -4M753 234l-1 4l-8 -4l0 5l-5 8l-2 -1l-2 7l-2 1l-4 -2l-3 11l-4 6l1 4l-2 2l-2 0l-2 1l-1 0l0 2l-5 2l-2 -1l-4 3l-5 -3l-1 -3M706 293l24 -3l59 -12M762 239l-6 -2l1 -2l-4 -1M764 242l0 1l-2 2l-1 5l2 0l2 -1l2 2M798 160l-3 -15l-2 0l0 -3l-2 -4l0 -4l-3 -8l0 -6M809 157l-11 3M523 362l-11 -5l-3 1l-9 0l-5 2l-2 -1l-5 1l-2 -3l-3 3l-4 -1l-4 -3l-4 1l-2 -4l-7 0l-9 -2l-3 -4l-4 1l-5 -4l1 -35l-43 -3M529 374l2 19l2 2l6 14l-4 13l2 1l0 4l-4 5l1 2M523 362l1 1l6 0l-1 11M399 306l-6 82l-56 -5l2 5M399 133l-2 16M306 148l2 -10l44 7l45 4M399 133l3 -55M670 401l-31 3l-9 2l0 2l4 4l-2 6M725 398l-6 0l-2 0l1 7l-2 2l-2 -3l-41 1l-3 -4M656 253l4 0l7 5l6 2l3 -1l3 1l5 -2l2 2l2 2M678 297l-10 1l-50 5l-1 -1l-3 0l1 3l-21 2M599 298l0 5l-5 4M688 262l1 5l3 5l5 4l2 0M613 281l-1 4l1 2l-5 3l0 4l-1 2l-8 -2l-1 1l1 3M656 253l-1 1l2 4l-1 1l-2 0l-2 2l-4 0l0 3l-1 2l-2 3l-2 1l-2 6l-3 -1l-1 -3l-4 6l-3 -1l-3 2l-1 2l-5 -3l-3 2l-3 -1l0 2l-2 0M678 297l6 -3l1 -2l4 -3l1 -4l4 -3l5 -6M509 246l4 2l1 0l1 3l-2 3l3 6l3 1l1 40M520 301l-65 -1l-42 -2M509 246l-50 -1l-42 -2M413 298l4 -55M783 219l-4 0l-1 2M783 219l-2 2l1 4M778 221l6 23l9 -2M242 276l18 -90M242 276l-2 15l-2 3l-5 -3l-3 -1l-1 3l1 2l-1 11l-2 4M182 169l38 9M217 351l2 1l3 -4l-2 -3l-1 -6l4 -3l3 -8l5 -3l-3 -8l-1 -7M182 169l-55 -16M182 169l-14 53l59 88M238 107l1 -3l-1 -3l10 -47M299 193l-39 -7M299 193l7 -45M238 107l4 6l0 3l-8 12l-6 6l-1 3l3 2l0 2l-2 5l-8 32M306 148l-2 -4l-1 -1l-3 4l-3 0l-7 -3l-1 2l-4 -1l-2 2l-3 -8l-2 -1l-1 -2l0 -4l-2 -3l-1 -9l-1 0l-5 3l-2 -2l1 -4l1 -1l0 -5l5 -8l-4 -1l-3 -3l-3 -10l-3 -2l-2 -3l1 -3l-2 -6l3 -18M260 186l-40 -8M831 145l-2 0l-1 -2l-3 -2l-10 -33M809 157l16 -3l0 -3l3 -1l1 -1M809 157l-1 -1l0 -3l-1 -10l1 -10l0 -5l4 -4l0 -3l-1 -2l0 -5"/>
+          <path class="jm-route" id="jRoute"/>
+          <path class="jm-glow" id="jGlow"/>
+          <path class="jm-done" id="jDone"/>
+          <g id="jDots"></g>
+          <circle class="jm-pulse" id="jPulse" cx="120" cy="400" r="9"/>
+          <circle class="jm-head-dot" id="jHead" cx="120" cy="400" r="4.5"/>
+        </svg>
+        <div class="jm-labels" id="jLabels"></div>
+      </div>
+      <div class="jm-foot"><span id="jLeg"></span><span class="to" id="jLeft"></span></div>
     </div>
+  </section>
+
+  <section class="statsrow">
+    <div class="sbox"><small>Walkers</small><b id="xWalkers">0</b></div>
+    <div class="sbox"><small>Miles/week</small><b id="xWeek">0</b></div>
+    <div class="sbox"><small>Days logged</small><b id="xDays">0</b></div>
+    <div class="sbox"><small>Biggest week</small><b id="xBigWeek">0</b><span class="who"><span class="nm" id="xBigWho"></span><i id="xBigWhen"></i></span></div>
+    <div class="sbox"><small>Longest streak</small><b id="xStreak">0</b><span class="who"><span class="nm" id="xStreakWho"></span></span></div>
   </section>
 
   <div class="sec-head"><h2>The crew</h2></div>
@@ -446,11 +498,107 @@ const CONFIG = {
 /* ====================================================== */
 
 const COLORS = ["#c6ff3d","#ff7a45","#4dd0ff","#ff5fa2","#ffd23f","#9b7bff","#3dffb1","#ff4d4d"];
+/* The loop: Atlanta → New York → Los Angeles → Austin → Atlanta.
+   Distances are great-circle between hops, so the map and the numbers always agree. */
+const JMAP = { W:1000, H:466, n:0.6028370046288243, l0:-96, C:1.351221325417899,
+  RHO0:1.2944500917315163, minX:-0.4804379868849112, sx:0.9608759737698224, maxY:0.2714340343629771 };
+/* Albers USA conic — the projection the bundled land shape was drawn in. */
+const jmxy = (lon, lat) => {
+  const th = JMAP.n * (lon - JMAP.l0) * Math.PI / 180;
+  const r = Math.sqrt(JMAP.C - 2 * JMAP.n * Math.sin(lat * Math.PI / 180)) / JMAP.n;
+  const x = r * Math.sin(th), y = JMAP.RHO0 - r * Math.cos(th);
+  return [ (x - JMAP.minX) / JMAP.sx * JMAP.W, (JMAP.maxY - y) / JMAP.sx * JMAP.W ];
+};
+/* [name, lat, lon, label level] — 2 always, 1 wide screens, 0 dot only */
 const JOURNEY = [
-  [26.2,"a marathon"],[95,"NYC → Philly"],[215,"NYC → Boston"],[365,"NYC → Washington, D.C. and back"],
-  [790,"NYC → Chicago"],[1280,"NYC → Miami"],[2790,"NYC → Los Angeles"],[3460,"across the Atlantic to London"],
-  [5000,"5,000 miles"],[7500,"7,500 miles"],[10000,"10,000 miles"],[24901,"around the Earth"]
-];
+  ["Atlanta",33.7490,-84.3880,2],["Charlotte",35.2271,-80.8431,0],["Greensboro",36.0726,-79.7920,0],
+  ["Richmond",37.5407,-77.4360,0],["Washington",38.9072,-77.0369,1],["Philadelphia",39.9526,-75.1652,0],
+  ["New York",40.7128,-74.0060,2],["Cleveland",41.4993,-81.6944,0],["Chicago",41.8781,-87.6298,1],
+  ["Omaha",41.2565,-95.9345,0],["Denver",39.7392,-104.9903,1],["Salt Lake City",40.7608,-111.8910,0],
+  ["Boise",43.6150,-116.2023,0],["Seattle",47.6062,-122.3321,1],["Portland",45.5152,-122.6784,0],
+  ["San Francisco",37.7749,-122.4194,1],["Los Angeles",34.0522,-118.2437,2],["Phoenix",33.4484,-112.0740,0],
+  ["El Paso",31.7619,-106.4850,0],["San Antonio",29.4241,-98.4936,0],["Austin",30.2672,-97.7431,2],
+  ["Houston",29.7604,-95.3698,0],["New Orleans",29.9511,-90.0715,1],["Atlanta",33.7490,-84.3880,0]
+].map(([name, lat, lon, lvl]) => { const [x, y] = jmxy(lon, lat); return { name, lat, lon, lvl, x, y }; });
+const jmMiles = (a, b) => {
+  const R = 3958.8, r = d => d * Math.PI / 180;
+  const dp = r(b.lat - a.lat), dl = r(b.lon - a.lon);
+  const h = Math.sin(dp/2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dl/2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+};
+JOURNEY.forEach((p, i) => { p.cum = i ? JOURNEY[i-1].cum + jmMiles(JOURNEY[i-1], p) : 0; });
+const JM_TOTAL = JOURNEY[JOURNEY.length-1].cum;
+const jmAt = mi => {
+  if (mi <= 0) return { x: JOURNEY[0].x, y: JOURNEY[0].y, next: 1 };
+  for (let i = 1; i < JOURNEY.length; i++) {
+    const a = JOURNEY[i-1], b = JOURNEY[i];
+    if (mi <= b.cum) { const t = (mi - a.cum) / (b.cum - a.cum);
+      return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, next: i }; }
+  }
+  const z = JOURNEY[JOURNEY.length-1];
+  return { x: z.x, y: z.y, next: JOURNEY.length - 1 };
+};
+const jmPath = mi => {
+  let d = "M" + JOURNEY[0].x.toFixed(1) + " " + JOURNEY[0].y.toFixed(1);
+  for (let i = 1; i < JOURNEY.length; i++) {
+    const a = JOURNEY[i-1], b = JOURNEY[i];
+    if (mi >= b.cum) { d += "L" + b.x.toFixed(1) + " " + b.y.toFixed(1); continue; }
+    const t = Math.max(0, (mi - a.cum) / (b.cum - a.cum));
+    return d + "L" + (a.x + (b.x - a.x) * t).toFixed(1) + " " + (a.y + (b.y - a.y) * t).toFixed(1);
+  }
+  return d;
+};
+let jmMilesNow = 0, jmResizeT;
+function paintJourney(miles) {
+  const svg = $("jSvg"); if (!svg) return;
+  jmMilesNow = miles;
+  const mi = Math.max(0, Math.min(miles, JM_TOTAL));
+  const done = mi >= JM_TOTAL;
+  $("jRoute").setAttribute("d", jmPath(JM_TOTAL));
+  const d = jmPath(mi);
+  $("jDone").setAttribute("d", d);
+  $("jGlow").setAttribute("d", d);
+  const at = jmAt(mi);
+  for (const id of ["jHead", "jPulse"]) {
+    $(id).setAttribute("cx", at.x.toFixed(1)); $(id).setAttribute("cy", at.y.toFixed(1));
+  }
+  $("jDots").innerHTML = JOURNEY.map((p, i) =>
+    `<circle class="jm-dot${p.cum <= mi ? " on" : ""}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${i ? 4.2 : 5}"/>`
+  ).join("");
+  /* Labels: place in priority order (next city, anchors, then hubs) and drop any
+     that would collide, so the north-east cluster never turns into a pile-up. */
+  const wide = window.matchMedia("(min-width:760px)").matches;
+  const last = JOURNEY.length - 1;
+  const placed = [], out = [];
+  const hits = (x, y, w) => placed.some(q => Math.abs(q.x - x) < (q.w + w) / 2 + 8 && Math.abs(q.y - y) < 44);
+  JOURNEY.map((p, i) => ({ p, i }))
+    .filter(({ p, i }) => i !== last && (i === at.next || p.lvl === 2 || (p.lvl === 1 && wide)))
+    .sort((a, b) => (b.p.lvl === 2) - (a.p.lvl === 2) || (b.i === at.next) - (a.i === at.next))
+    .forEach(({ p, i }) => {
+      const w = p.name.length * 8.6;
+      let under = false;
+      if (hits(p.x, p.y - 26, w)) {
+        if (hits(p.x, p.y + 26, w)) return;   /* nowhere to put it without covering another name */
+        under = true;
+      }
+      placed.push({ x: p.x, y: under ? p.y + 26 : p.y - 26, w });
+      const cls = [p.lvl === 2 ? "anchor" : "", p.lvl === 1 ? "wide" : "",
+        i === at.next ? "live" : "", under ? "under" : "", p.cum <= mi ? "on" : ""].join(" ").trim();
+      out.push(`<span class="${cls}" style="left:${(p.x / JMAP.W * 100).toFixed(2)}%;top:${(p.y / JMAP.H * 100).toFixed(2)}%">${esc(p.name)}</span>`);
+    });
+  $("jLabels").innerHTML = out.join("");
+  const frac = mi / JM_TOTAL;
+  $("jMiles").innerHTML = miles.toFixed(1) + "<i>mi</i>";
+  const to = JOURNEY[at.next], from = JOURNEY[Math.max(0, at.next - 1)];
+  $("jLeg").innerHTML = done
+    ? "<b>Loop complete</b>"
+    : `<b>${esc(from.name)}</b> → <b>${esc(to.name)}</b>`;
+  $("jLeft").textContent = done
+    ? Math.round(JM_TOTAL).toLocaleString() + " mi"
+    : (to.cum - mi).toFixed(0) + " mi to go";
+  svg.setAttribute("aria-label", `Crew journey: ${(frac * 100).toFixed(1)}% of ${Math.round(JM_TOTAL).toLocaleString()} miles, ${(to.cum - mi).toFixed(0)} to ${to.name}`);
+}
+addEventListener("resize", () => { clearTimeout(jmResizeT); jmResizeT = setTimeout(() => paintJourney(jmMilesNow), 160); });
 const QUOTES = [
   "The miracle isn't that I finished. It's that I had the courage to start. — John Bingham",
   "Walk or run, just do the mile you're in.",
@@ -620,6 +768,46 @@ function statsFor(id, r, logs) {
     ranToday: settled, missed: Math.max(0, dayN - done - sickDays - (settled ? 0 : 1)) };
 }
 
+/* ---------- crew stats + latest entries ---------- */
+const fmtMi = v => String(Math.round(v * 100) / 100);
+const fmtMi1 = v => (Math.round(v * 10) / 10).toString();
+const rangeLbl = (a, b) => {
+  const da = parse(a), db = parse(b), mo = d => d.toLocaleDateString(undefined, { month: "short" });
+  return da.getMonth() === db.getMonth() && da.getFullYear() === db.getFullYear()
+    ? `${mo(da)} ${da.getDate()}–${db.getDate()}`
+    : `${mo(da)} ${da.getDate()} – ${mo(db)} ${db.getDate()}`;
+};
+function renderSplit(all, t) {
+  const weekStart = addDays(t, -6);
+  let weekMi = 0;
+  all.forEach(({ s }) => Object.entries(s.L).forEach(([d, v]) => {
+    if (d >= weekStart && d <= t) weekMi += milesOf(v);
+  }));
+  // biggest 7-day window any single walker has put together
+  let big = { name: "", mi: 0, from: "" };
+  all.forEach(({ r, s }) => {
+    const keys = s.keys.slice().sort();
+    if (!keys.length) return;
+    for (let d = keys[0]; d <= t; d = addDays(d, 1)) {
+      let sum = 0;
+      for (let i = 0; i < 7; i++) sum += milesOf(s.L[addDays(d, i)]);
+      if (sum > big.mi) big = { name: r.name, mi: sum, from: d };
+    }
+  });
+  const streak = all.reduce((a, x) => x.s.bestStreak > a.n ? { n: x.s.bestStreak, name: x.r.name } : a, { n: 0, name: "" });
+  const days = all.reduce((a, x) => a + x.s.count, 0);
+
+  $("xWalkers").textContent = all.length;
+  $("xWeek").innerHTML = fmtMi1(weekMi) + "<i>mi</i>";
+  $("xDays").textContent = days;
+  $("xBigWeek").innerHTML = fmtMi1(big.mi) + "<i>mi</i>";
+  $("xBigWho").textContent = big.name;
+  $("xBigWhen").textContent = big.from ? "· " + rangeLbl(big.from, addDays(big.from, 6)) : "";
+  $("xStreak").innerHTML = streak.n + "<i>days</i>";
+  $("xStreakWho").textContent = streak.name;
+
+}
+
 /* ---------- render ---------- */
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -649,8 +837,8 @@ let lastData = null;
 function render(data) {
   lastData = data;
   const t = today();
-  $("todayLabel").textContent = parse(t).toLocaleDateString(undefined,{weekday:"long"});
-  $("todayDay").textContent = parse(t).toLocaleDateString(undefined,{month:"long",day:"numeric",year:"numeric"});
+  $("todayDay").textContent = parse(t).toLocaleDateString(undefined,
+    {weekday:"long",month:"long",day:"numeric",year:"numeric"});
   $("banner").innerHTML = Store.live ? "" :
     `<div class="banner"><b>Practice mode:</b> check-ins only save on this device. Add your Firebase config to make it shared and live for the whole crew.</div>`;
 
@@ -675,16 +863,8 @@ function render(data) {
 
   // crew stats
   const miles = all.reduce((a,x) => a + x.s.miles, 0);
-  $("sMiles").textContent = miles.toFixed(1);
-  $("sRuns").textContent = all.reduce((a,x) => a + x.s.count, 0);
-  $("sToday").textContent = `${all.filter(x => x.s.ranToday).length}/${all.length}`;
-  $("sDays").textContent = all.reduce((a,x) => a + x.s.done, 0);
-  const next = JOURNEY.find(([d]) => d > miles) || JOURNEY[JOURNEY.length-1];
-  const prevD = (JOURNEY[JOURNEY.indexOf(next)-1] || [0])[0];
-  const reached = JOURNEY.filter(([d]) => d <= miles).pop();
-  $("jText").textContent = (reached ? `Together you've covered ${reached[1]}. ` : "") +
-    `Next: ${next[1]} — ${Math.max(0, next[0]-miles).toFixed(1)} mi to go`;
-  $("jBar").style.width = Math.min(100, (miles-prevD)/(next[0]-prevD)*100) + "%";
+  paintJourney(miles);
+  renderSplit(all, t);
 
   // runner cards
   $("runners").innerHTML = all.length ? all.map(({id,r,s}) => { const mine = canEdit(id); return `
